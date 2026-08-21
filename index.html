@@ -3,13 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hello World - Coff V4 Miroir Absolu & Bibliothèque</title>
+<title>Hello World - Coff V4 Miroir Absolu & Rétro Gaming</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
 #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
 .container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; pointer-events: none; }
-h1 { font-size: 5rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff; letter-spacing: 3px; animation: glitch 1.5s infinite; }
+h1 {
+  font-size: 6rem;
+  text-transform: uppercase;
+  color: #ff0055;
+  text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055;
+  letter-spacing: 5px;
+  animation: glitch 1.5s infinite;
+  transition: transform 0.05s ease;
+}
 #consent-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; pointer-events: auto; }
 .modal-card { background: #101424; border: 2px solid #ff0055; padding: 30px; border-radius: 12px; max-width: 450px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); display: flex; flex-direction: column; gap: 15px; }
 .modal-card h2 { color: #00e5ff; font-size: 1.5rem; text-transform: uppercase; }
@@ -22,7 +30,7 @@ h1 { font-size: 5rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 
 <div id="consent-modal">
 <div class="modal-card">
 <h2>⚠️ Autorisation Requise</h2>
-<p>Cette application interactive utilise des <b>cookies</b>, un <b>synthétiseur audio</b> et un <b>moteur de particules</b>.</p>
+<p>Cette application interactive utilise des <b>cookies</b>, un <b>synthétiseur audio rétro</b> et un <b>moteur de feux d'artifice</b>.</p>
 <button class="btn-accept" onclick="acceptConsent()">🚀 Autoriser & Activer</button>
 </div>
 </div>
@@ -42,10 +50,16 @@ h1 { font-size: 5rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 
 <coC3> BassFrequency ↕️ ScaleAmplitude 📈 </coC3>
 <coD4> UserInput ⬅️ PointerEvent 👆 </coD4>
 
+<!-- ================= MIROIR B : Fermetures exactes des balises co ================= -->
+</co>
+</co>
+</co>
+
 <!-- ================= CŒUR LOGIQUE (JavaScript Unifié) ================= -->
 <script-core>
 const canvas = document.getElementById('canvas-bg');
 const ctx = canvas.getContext('2d');
+const title = document.getElementById('title');
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -121,7 +135,7 @@ class Particle {
 
 function triggerExplosion(x, y) {
   const colors = ['#ff0055', '#00e5ff', '#ffaa00', '#ffffff'];
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 140; i++) {
     particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
   }
 }
@@ -159,6 +173,7 @@ function startEngine() {
   }, 140);
 }
 
+// Feux d'artifice et sons interactifs au clic ou au toucher sur l'écran
 canvas.addEventListener('pointerdown', (e) => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -184,10 +199,6 @@ function animate() {
 animate();
 </script-core>
 
-<!-- ================= MIROIR B : Balises fermantes inversées en miroir ================= -->
-</co>
-</co>
-</co>
 </Value>
 </script>
 </body>
