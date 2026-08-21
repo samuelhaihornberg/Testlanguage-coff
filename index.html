@@ -1,36 +1,66 @@
-<html>
-<style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello World - Coff V4 Rétro Explosif</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
+    #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    .container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; pointer-events: none; }
+    h1 {
+      font-size: 6rem;
+      text-transform: uppercase;
+      color: #ff0055;
+      text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055;
+      letter-spacing: 5px;
+      animation: glitch 1.5s infinite;
+    }
+    .btn-start {
+      pointer-events: auto;
+      background: linear-gradient(90deg, #ff0055, #00e5ff);
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+    }
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px 0px #00ffff, -3px -3px 0px #ff0055; }
+      50% { text-shadow: -3px 3px 0px #00ffff, 3px -3px 0px #ff0055; }
+      100% { text-shadow: 3px -3px 0px #00ffff, -3px -3px 0px #ff0055; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="canvas-bg"></canvas>
+  <div class="container">
+    <h1 id="title">HELLO WORLD 🚀</h1>
+    <button class="btn-start" onclick="initCoffExperience()">⚡ ACTIVER COFF V4 AUDIO & EXPLOSIONS</button>
+  </div>
+
 <script>
 <Value>
   <co id="CoffSystemRoot" type="AppModule">
     <co property="AudioEngine" param="ChiptuneSquare" value="active">
       <co property="VisualEngine" param="ParticleExplosion" value="active">
         
-        <!-- === COFF V3 : Connexions explicites facilitant la lecture programme === -->
+        <!-- === COFF V4 : Connexions explicites & routage programmatique === -->
         <co> valeur:AudioMaster ↔️ valeur:CanvasRenderer </co>
         <co> valeur:TriggerBeat ➡️ valeur:ExplosionLauncher </co>
         <co> valeur:BassFrequency ↕️ valeur:ScaleAmplitude </co>
         <co> valeur:PlayerInput ⬅️ valeur:ButtonActivation </co>
 
-        <!-- Moteur JavaScript unifié -->
-        const canvas = document.createElement('canvas');
-        canvas.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; background:#05050a;';
-        document.body.appendChild(canvas);
+        // Moteur JavaScript unifié
+        const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-
-        const container = document.createElement('div');
-        container.style.cssText = 'position:relative; z-index:2; text-align:center; display:flex; flex-direction:column; align-items:center; gap:20px; height:100vh; justify-content:center;';
-        document.body.appendChild(container);
-
-        const title = document.createElement('h1');
-        title.innerText = 'HELLO WORLD 🚀';
-        title.style.cssText = 'font-size:6rem; text-transform:uppercase; color:#ff0055; text-shadow:0 0 20px #ff0055, 0 0 40px #00ffff; font-family:Impact,sans-serif; letter-spacing:5px;';
-        container.appendChild(title);
-
-        const btn = document.createElement('button');
-        btn.innerText = '⚡ ACTIVER COFF V3 AUDIO & EXPLOSIONS';
-        btn.style.cssText = 'pointer-events:auto; background:linear-gradient(90deg,#ff0055,#00e5ff); border:none; color:#fff; padding:15px 30px; font-size:1.5rem; font-weight:bold; cursor:pointer; border-radius:8px; text-transform:uppercase;';
-        container.appendChild(btn);
+        const title = document.getElementById('title');
 
         function resize() {
           canvas.width = window.innerWidth;
@@ -79,10 +109,10 @@
           }
         }
 
-        btn.onclick = () => {
+        function initCoffExperience() {
           if (isRunning) return;
           isRunning = true;
-          btn.style.display = 'none';
+          document.querySelector('.btn-start').style.display = 'none';
 
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
           let step = 0;
@@ -102,7 +132,7 @@
             if (step % 8 === 0) triggerExplosion();
             step++;
           }, 140);
-        };
+        }
 
         function animate() {
           requestAnimationFrame(animate);
@@ -122,5 +152,5 @@
   </co>
 </Value>
 </script>
-</style>
+</body>
 </html>
