@@ -7,38 +7,39 @@
   :root { --bg-primary: #05050a; --bg-secondary: #101424; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --accent-yellow: #ffcc00; --text-main: #f0f0f5; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
   body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+  canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
 <header id="coff-header">
 <main id="coff-main">
 <sections id="coff-sections">
 <articles id="coff-articles">
+
+<!-- ================= 2. VALEURS & CONTENEURS (Fusionnés avant les div) ================= -->
+<Value>
+<co id="SpaEngine">
+<co id="PhysicsEngine">
+
+  <!-- Routages Tertiaires COFF -->
+  <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
+  <b2> CodeInput ➡️➡️ LivePreview 🔄 </b2>
+  <c3> CookieAccept ➡️➡️ UnlockSystem 🔓 </c3>
+  <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
+  <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
+
 <div id="coff-hub-ui">
-<div id="SpaEngine">
-<div id="PhysicsEngine">
 <script>
-
-  /* ================= 2. VALEURS, ATTRIBUTS & ROUTAGES TERTIAIRES ================= */
-  <Value>
-    <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
-    <b2> CodeInput ➡️➡️ LivePreview 🔄 </b2>
-    <c3> CookieAccept ➡️➡️ UnlockSystem 🔓 </c3>
-    <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
-    <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
-  </Value>
-
   /* === RÉFRACTION : MOTEUR D'INTERFACE ET DE LOGIQUE === */
   document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. Injection du Canvas de fond (Moteur Physique)
+    // 1. Injection du Canvas de fond
     const canvas = document.createElement('canvas');
     canvas.id = 'canvas-bg';
-    canvas.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1; pointer-events:none;';
     document.body.appendChild(canvas);
 
-    // 2. Injection de la SPA et du Hub au-dessus du miroir
-    const uiLayer = document.createElement('div');
-    uiLayer.style.cssText = 'position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;';
+    // 2. Injection de la SPA dans le <div> protecteur
+    const uiContainer = document.getElementById('coff-hub-ui');
+    uiContainer.style.cssText = 'position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;';
     
-    uiLayer.innerHTML = `
+    uiContainer.innerHTML = `
       <!-- En-tête -->
       <div style="background:var(--bg-secondary); border-bottom:2px solid var(--accent-pink); padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
         <div style="font-family:'Impact'; font-size:2rem; color:var(--accent-pink); letter-spacing:2px;">COFF <span style="color:var(--accent-cyan);">V5</span></div>
@@ -57,21 +58,21 @@
         <div id="view-articles" class="view-section" style="display:block;">
           <h2 style="color:var(--accent-cyan); font-family:'Impact'; font-size:2.5rem; margin-bottom:20px;">Manifeste & Architecture</h2>
           <div style="background:#171b30; border:1px solid rgba(255,0,85,0.3); padding:20px; border-radius:8px; margin-bottom:20px;">
-            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Réfractif</h3>
-            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">La structure d'entonnoir est parfaitement respectée. Le JavaScript injecte l'interface visuelle par réfraction depuis le centre, tout en maintenant l'intégrité de la mémoire spatio-temporelle.</p>
+            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Réfractif Corrigé</h3>
+            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">L'entonnoir est désormais mathématiquement pur. Les balises de mémorisation &lt;Value&gt; et &lt;co&gt; encapsulent proprement l'UI et la logique spatio-temporelle, juste avant le point de réfraction central.</p>
           </div>
         </div>
 
         <!-- VUE: DÉMO HELLO WORLD -->
         <div id="view-demo" class="view-section" style="display:none; text-align:center;">
-          <h1 style="font-family:'Impact'; font-size:6rem; color:var(--accent-pink); text-shadow:0 0 20px var(--accent-pink), 0 0 40px var(--accent-cyan); margin:40px 0;">HELLO WORLD</h1>
+          <h1 id="glitch-text" style="font-family:'Impact'; font-size:6rem; color:var(--accent-pink); text-shadow:0 0 20px var(--accent-pink), 0 0 40px var(--accent-cyan); margin:40px 0;">HELLO WORLD</h1>
           <button id="trigger-btn" style="background:linear-gradient(90deg, var(--accent-yellow), #ffaa00); border:none; padding:15px 30px; font-size:1.5rem; font-family:'Impact'; cursor:pointer; color:#000;">DÉCLENCHER COFF ☢️</button>
         </div>
 
         <!-- VUE: ÉDITEUR -->
         <div id="view-editor" class="view-section" style="display:none;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Test de réfraction&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
+            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Matrice Intacte&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
             <div id="coff-preview" style="background:#fff; color:#000; padding:15px; overflow:auto;"></div>
           </div>
         </div>
@@ -79,24 +80,23 @@
         <!-- VUE: FORUM -->
         <div id="view-forum" class="view-section" style="display:none;">
           <div style="background:rgba(0, 229, 255, 0.05); border-left:4px solid var(--accent-cyan); padding:15px; margin-bottom:15px;">
-            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Pourquoi le code source est-il inversé dans les navigateurs ?</h4>
-            <p style="color:var(--text-muted);">R: C'est le principe du Miroir Dynamoactif. Le navigateur casse visuellement l'arbre DOM dans l'inspecteur, mais le serveur et le cache traitent le fichier selon la vraie hiérarchie LIFO, accélérant la lecture de la base de données vers l'UI.</p>
+            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Quelle est la place exacte de &lt;Value&gt; ?</h4>
+            <p style="color:var(--text-muted);">R: Elle encadre les &lt;co&gt; et se place en avant-dernière position, juste avant l'injection des &lt;div&gt; et de la logique pure &lt;script&gt;. Cela crée un sas de sécurité étanche.</p>
           </div>
         </div>
 
       </div>
     `;
-    document.body.appendChild(uiLayer);
 
     // 3. Modale Cookies (Autorisations)
     if (!localStorage.getItem('coff_auth')) {
       const modal = document.createElement('div');
-      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.9); z-index:9999; display:flex; justify-content:center; align-items:center;';
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.95); z-index:9999; display:flex; justify-content:center; align-items:center;';
       modal.innerHTML = `
-        <div style="background:#171b30; border:2px solid var(--accent-pink); padding:40px; text-align:center; border-radius:10px;">
-          <h2 style="color:var(--accent-cyan); font-family:'Impact';">⚠️ HABILITATION REQUISE</h2>
-          <p style="margin:20px 0; color:var(--text-muted);">Cookies et API Audio requis pour le noyau dynamoactif.</p>
-          <button id="accept-btn" style="background:var(--accent-pink); border:none; color:#fff; padding:10px 20px; font-weight:bold; cursor:pointer;">AUTORISER</button>
+        <div style="background:#171b30; border:2px solid var(--accent-pink); padding:40px; text-align:center; border-radius:10px; max-width:500px;">
+          <h2 style="color:var(--accent-cyan); font-family:'Impact'; letter-spacing:2px;">⚠️ HABILITATION REQUISE</h2>
+          <p style="margin:20px 0; color:var(--text-muted); line-height:1.5;">Le Miroir Absolu nécessite votre autorisation pour initialiser les Cookies, le moteur de particules et l'audio Chiptune embarqué.</p>
+          <button id="accept-btn" style="background:linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border:none; color:#fff; padding:12px 24px; font-weight:bold; font-size:1.1rem; cursor:pointer; border-radius:6px;">🚀 AUTORISER & ACTIVER</button>
         </div>
       `;
       document.body.appendChild(modal);
@@ -104,9 +104,11 @@
         localStorage.setItem('coff_auth', 'true');
         modal.remove();
         initAudio();
+        animateCanvas();
       });
     } else {
       initAudio();
+      animateCanvas();
     }
 
     // 4. Logique SPA (Onglets)
@@ -152,10 +154,15 @@
         particles.push({
           x: rect.left + rect.width/2, y: rect.top + rect.height/2,
           vx: (Math.random()-0.5)*30, vy: (Math.random()-0.5)*30,
-          color: ['#ff0055', '#00e5ff', '#ffcc00'][Math.floor(Math.random()*3)],
+          color: ['#ff0055', '#00e5ff', '#ffcc00', '#ffffff'][Math.floor(Math.random()*4)],
           alpha: 1
         });
       }
+      
+      const title = document.getElementById('glitch-text');
+      title.style.color = "#fff";
+      setTimeout(() => title.style.color = "var(--accent-pink)", 150);
+
       if(audioCtx) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -169,7 +176,7 @@
       }
     });
 
-    function loop() {
+    function animateCanvas() {
       ctx.fillStyle = 'rgba(5, 5, 10, 0.3)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       for(let i = particles.length - 1; i >= 0; i--) {
@@ -178,20 +185,23 @@
         p.vx *= 0.9; p.vy *= 0.9; p.alpha -= 0.02;
         ctx.globalAlpha = Math.max(p.alpha, 0);
         ctx.fillStyle = p.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
         ctx.fillRect(p.x, p.y, 8, 8);
         if(p.alpha <= 0) particles.splice(i, 1);
       }
       ctx.globalAlpha = 1;
-      requestAnimationFrame(loop);
+      ctx.shadowBlur = 0;
+      requestAnimationFrame(animateCanvas);
     }
-    loop();
   });
 </script>
 
-<!-- ================= 3. FERMETURES (Le Miroir Absolu) ================= -->
+<!-- ================= 3. FERMETURES (Le Miroir Absolu Exact) ================= -->
 </div>
-</div>
-</div>
+</co>
+</co>
+</Value>
 </articles>
 </sections>
 </main>
@@ -201,5 +211,3 @@
 </meta>
 </meta>
 </html>
-
-
