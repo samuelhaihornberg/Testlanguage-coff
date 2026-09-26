@@ -3,118 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hello World - COFF V4 Logique Absolue</title>
+<title>COFF Hub - Communauté & Documentation</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
-  #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
-  .container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; pointer-events: none; }
-  h1 { font-size: 6rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055; letter-spacing: 5px; animation: glitch 1.5s infinite; transition: all 0.2s ease; }
-  #trigger-banner { width: 400px; height: 80px; background: linear-gradient(to bottom, #000 33%, #fc0 33%, #fc0 66%, #000 66%); border: 4px solid #fff; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
-  #trigger-banner:active { transform: scale(0.92); box-shadow: 0 0 40px rgba(255, 0, 85, 0.9); }
-  #trigger-banner span { color: #fff; font-size: 1.5rem; letter-spacing: 2px; background: rgba(0, 0, 0, 0.8); padding: 5px 15px; }
-  #consent-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; pointer-events: auto; }
-  .modal-card { background: #101424; border: 2px solid #ff0055; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); }
-  .btn-accept { background: linear-gradient(90deg, #ff0055, #00e5ff); border: none; color: #fff; padding: 12px 24px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
-  @keyframes glitch { 0% { text-shadow: 3px 3px 0 #0ff, -3px -3px 0 #f05; } 50% { text-shadow: -3px 3px 0 #0ff, 3px -3px 0 #f05; } 100% { text-shadow: 3px -3px 0 #0ff, -3px -3px 0 #f05; } }
-  .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
-</style>
+  :root { --bg-primary: #05050a; --bg-secondary: #101424; --bg-card: #171b30; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --accent-yellow: #ffcc00; --text-main: #f0f0f5; --text-muted: #8892b0; --border-color: rgba(255, 0, 85, 0.3); }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+  header { background: var(--bg-secondary); border-bottom: 2px solid var(--accent-pink); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
+  .logo { font-family: 'Impact', sans-serif; font-size: 1.8rem; color: var(--accent-pink); text-shadow: 0 0 10px var(--accent-pink); letter-spacing: 2px; }
+  .logo span { color: var(--accent-cyan); }
+  nav { display: flex; gap: 10px; }
+  .nav-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; transition: all 0.2s ease; }
+  .nav-btn:hover, .nav-btn.active { background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border-color: transparent; color: #fff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
+  main { flex: 1; padding: 30px; max-width: 1200px; width: 100%; margin: 0 auto; }
+  .view-section { display: none; animation: fadeIn 0.3s ease; }
+  .view-section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  h2 { font-family: 'Impact', sans-serif; font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+  .article-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s; }
+  .card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); }
+  .card h3 { color: var(--accent-yellow); margin-bottom: 10px; font-size: 1.3rem; }
+  .card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; }
+  .tag { display: inline-block; background: rgba(255, 204, 0, 0.1); color: var(--accent-yellow); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 5px; }
+  .showcase-container { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+  .interactive-frame { width: 100%; height: 500px; background: #000; border: 2px solid var(--accent-pink); border-radius: 12px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+  .banner-demo { width: 350px; height: 70px; background: linear-gradient(to bottom, #000 33%, var(--accent-yellow) 33%, var(--accent-yellow) 66%, #000 66%); border: 3px solid #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); }
+  .banner-demo span { background: #000; color: #fff; padding: 5px 15px; font-family: 'Impact', sans-serif; letter-spacing: 2px; }
+  .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 550px; }
+  .editor-pane { display: flex; flex-direction: column; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; }
+  .editor-pane label { font-weight: bold; margin-bottom: 8px; color: var(--accent-cyan); font-size: 0.9rem; }
+  textarea { flex: 1; background: #0a0d18; color: var(--text-main); border: 1px solid var(--text-muted); border-radius: 6px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; resize: none; line-height: 1.4; }
+  textarea:focus { outline: none; border-color: var(--accent-pink); }
+  .compile-btn { margin-top: 10px; background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border: none; color: #fff; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+  .forum-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .new-post-btn { background: var(--accent-cyan); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
+  .thread-list { display: flex; flex-direction: column; gap: 12px; }
+  .thread-card { background: var(--bg-card); border-left: 4px solid var(--accent-yellow); padding: 15px 20px; border-radius: 0 8px 8px 0; display: flex; justify-content: space-between; align-items: center; }
+  .thread-info h4 { color: var(--text-main); margin-bottom: 5px; font-size: 1.1rem; }
+  .thread-info p { color: var(--text-muted); font-size: 0.85rem; }
+  .thread-stats { text-align: right; color: var(--text-muted); font-size: 0.8rem; }
+
 <body>
-<div id="consent-modal">
-  <div class="modal-card">
-    <h2>⚠️ Système COFF en attente</h2>
-    <button class="btn-accept" onclick="acceptConsent()">🚀 Activer</button>
-  </div>
-</div>
-<canvas id="canvas-bg"></canvas>
-<div class="container">
-  <h1 id="title">HELLO WORLD 🚀</h1>
-  <div id="trigger-banner"><span>DÉCLENCHER</span></div>
-</div>
-<script>
+  <header>
+    <div class="logo">COFF <span>HUB</span></div>
+    <nav>
+      <button class="nav-btn active" onclick="switchView('articles', event)">Articles</button>
+      <button class="nav-btn" onclick="switchView('results', event)">Résultats & PWA</button>
+      <button class="nav-btn" onclick="switchView('editor', event)">Éditeur COFF</button>
+      <button class="nav-btn" onclick="switchView('forum', event)">Forum & FAQ</button>
+    </nav>
+  </header>
 
-<!-- ================= 2. LES VALEURS (Entrées COFF & Routages) ================= -->
-<Value>
-<co id="CoffSystemRoot" type="AppModule">
-<co property="AudioEngine" state="standby">
-<co property="VisualEngine" symbol="🎆">
-<co id="BoostEngine" type="CoreMultiplier">
+  <main>
+    <section id="articles" class="view-section active">
+      <h2>Manifeste & Documentation</h2>
+      <div class="article-grid">
+        <div class="card">
+          <h3>Le Miroir Absolu (LIFO Séquentiel)</h3>
+          <span class="tag">Architecture</span><span class="tag">V4</span>
+          <p>Découvrez comment l'ouverture séquentielle des balises globales (HTML) combinée aux blocs mémoires COFF et aux fermetures en miroir inversé redéfinit le parsing.</p>
+        </div>
+        <div class="card">
+          <h3>Connexions & Émojis Spatio-Temporels</h3>
+          <span class="tag">Syntaxe</span><span class="tag">Routage</span>
+          <p>Utiliser les flèches directionnelles (➡️, ↕️, ⏩) pour transformer un événement utilisateur en un pipeline de données fluide.</p>
+        </div>
+      </div>
+    </section>
 
-<coA1> BannerClick ➡️ ActionTrigger ⚡ </coA1>
-<coB2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </coB2>
-<coC3> BassAmplitude ↕️ ParticleVelocity 📈 </coC3>
-<coD4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </coD4>
+    <section id="results" class="view-section">
+      <h2>Démonstration Live PWA</h2>
+      <div class="showcase-container">
+        <div class="interactive-frame">
+          <div class="banner-demo" onclick="alert('⚡ Signal COFF transmis depuis l\'interface !')">
+            <span>DÉCLENCHER COFF</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- ================= MOTEUR JS ================= -->
-<script>
-  const canvas = document.getElementById('canvas-bg'), ctx = canvas.getContext('2d'), banner = document.getElementById('trigger-banner'), title = document.getElementById('title');
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-  let particles = [], audioCtx, clickCombo = 0, comboTimer;
+    <section id="editor" class="view-section">
+      <h2>Éditeur & Transpileur</h2>
+      <div class="editor-layout">
+        <div class="editor-pane">
+          <label>Structure Brute COFF</label>
+          <textarea>&lt;Value&gt;
+&lt;co id="System"&gt;
+  &lt;coA1&gt; UserClick ➡️ ActionTrigger ⚡ &lt;/coA1&gt;
+&lt;/co&gt;
+&lt;/Value&gt;</textarea>
+          <button class="compile-btn" onclick="alert('Miroir COFF validé !')">Vérifier le Miroir</button>
+        </div>
+        <div class="editor-pane">
+          <label>Console de Sortie</label>
+          <textarea readonly style="color: var(--accent-cyan); background: #03050a;">[COFF Core] Analyse de la symétrie...
+[OK] Balises environnement détectées.
+Prêt pour déploiement GitHub Pages.</textarea>
+        </div>
+      </div>
+    </section>
 
-  function acceptConsent() { document.getElementById('consent-modal').style.display = 'none'; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    <section id="forum" class="view-section">
+      <div class="forum-header">
+        <h2>Forum de la Communauté</h2>
+        <button class="new-post-btn" onclick="alert('Module de création ouvert')">+ Nouveau Sujet</button>
+      </div>
+      <div class="thread-list">
+        <div class="thread-card">
+          <div class="thread-info">
+            <h4>[Résolu] Tolérance du parseur sur les balises de fermeture</h4>
+            <p>Le navigateur tolère le miroir strict et reconstruit l'arbre silencieusement.</p>
+          </div>
+          <div class="thread-stats"><span>14 réponses</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  class Particle {
-    constructor(x, y, color, isBoosted) {
-      this.x = x; this.y = y; const angle = Math.random() * Math.PI * 2;
-      const speed = isBoosted ? Math.random() * 40 + 10 : Math.random() * 20 + 5;
-      this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
-      this.size = isBoosted ? Math.random() * 20 + 8 : Math.random() * 12 + 4;
-      this.color = color; this.alpha = 1; this.decay = isBoosted ? Math.random() * 0.04 + 0.02 : Math.random() * 0.02 + 0.01;
-    }
-    update() { this.x += this.vx; this.y += this.vy; this.vx *= 0.92; this.vy *= 0.92; this.alpha -= this.decay; }
-    draw() { ctx.save(); ctx.globalAlpha = Math.max(this.alpha, 0); ctx.fillStyle = this.color; ctx.shadowBlur = 20; ctx.shadowColor = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); ctx.restore(); }
-  }
+  <script>
+    
+    <!-- ================= 2. LES VALEURS (Mémoire COFF) ================= -->
+    <Value>
+    <co id="CoffHubEngine" type="PlatformCore">
+    <co property="UINavigation" state="active">
+    <co property="ForumDatabase" state="standby">
 
-  function triggerExplosion(x, y, isBoosted) {
-    const colors = isBoosted ? ['#ffffff', '#ffcc00', '#ff0000', '#00ffcc'] : ['#ff0055', '#00e5ff', '#ffcc00'];
-    const count = isBoosted ? 400 : 150;
-    for (let i = 0; i < count; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], isBoosted));
-  }
+    <!-- Routages Tertiaires -->
+    <coA1> NavClick ➡️ ViewSwitch 🔄 </coA1>
+    <coB2> PostButton ➡️➡️ DataThread 📩 </coB2>
 
-  function playSound(freq, duration, type = 'square') {
-    if (!audioCtx) return;
-    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
-  }
+    <!-- ================= MOTEUR JS (Logique d'exécution) ================= -->
+    <script>
+      function switchView(viewId, event) {
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        event.currentTarget.classList.add('active');
+      }
+    </script>
 
-  banner.addEventListener('pointerdown', () => {
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    clickCombo++; clearTimeout(comboTimer);
-    const rect = banner.getBoundingClientRect(), centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
-
-    if (clickCombo >= 4) {
-      title.classList.add('overload-text'); triggerExplosion(centerX, centerY, true);
-      playSound(110, 0.4, 'sawtooth'); playSound(880, 0.2, 'square');
-    } else {
-      triggerExplosion(centerX, centerY, false);
-      playSound(165, 0.1); setTimeout(() => playSound(330, 0.1), 80);
-    }
-    comboTimer = setTimeout(() => { clickCombo = 0; title.classList.remove('overload-text'); }, 400); 
-  });
-
-  function animate() {
-    requestAnimationFrame(animate); ctx.fillStyle = 'rgba(5, 5, 10, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (let i = particles.length - 1; i >= 0; i--) { particles[i].update(); particles[i].draw(); if (particles[i].alpha <= 0) particles.splice(i, 1); }
-  }
-  animate();
-</script>
-
-<!-- ================= 3. LES BALISES CLOSES EN MIROIR EXACT ================= -->
-<!-- Fermetures COFF -->
-</co>
-</co>
-</co>
-</co>
-</Value>
-</script>
+    <!-- ================= 3. LES BALISES CLOSES EN MIROIR EXACT ================= -->
+    <!-- Fermetures COFF -->
+    </co>
+    </co>
+    </co>
+    </Value>
+    
+  </script>
 
 <!-- Fermetures HTML -->
-</div>
-</div>
-</div>
 </body>
 </style>
 </title>
@@ -122,3 +159,4 @@
 </meta>
 </head>
 </html>
+
