@@ -1,338 +1,204 @@
-
 <!DOCTYPE html>
 <html lang="fr">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COFF V5 - SPA & Hub Central</title>
+<bibliotheque>
 <style>
-  :root { 
-    --bg-primary: #05050a; 
-    --bg-secondary: #101424; 
-    --bg-card: #171b30; 
-    --accent-pink: #ff0055; 
-    --accent-cyan: #00e5ff; 
-    --accent-yellow: #ffcc00; 
-    --text-main: #f0f0f5; 
-    --text-muted: #8892b0; 
-  }
+  :root { --bg-primary: #05050a; --bg-secondary: #101424; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --accent-yellow: #ffcc00; --text-main: #f0f0f5; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body, html { width: 100%; height: 100%; background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; }
-  
-  /* Layout Global */
-  #app-wrapper { display: flex; flex-direction: column; min-height: 100vh; position: relative; z-index: 2; }
-  canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
-  
-  /* Modale de Consentement (Cookies) */
-  #modal-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,10,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-  .modal-card { background: var(--bg-card); border: 2px solid var(--accent-pink); padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 0 40px rgba(255,0,85,0.4); max-width: 500px; }
-  .modal-card h2 { color: var(--accent-cyan); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
-  .modal-card p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
-  .btn-accept { background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border: none; color: #fff; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
-
-  /* En-tête & Navigation SPA */
-  header { background: var(--bg-secondary); border-bottom: 2px solid var(--accent-pink); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 10; }
-  .logo { font-family: 'Impact', sans-serif; font-size: 2rem; color: var(--accent-pink); letter-spacing: 2px; }
-  .logo span { color: var(--accent-cyan); }
-  nav { display: flex; gap: 10px; flex-wrap: wrap; }
-  .nav-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; text-transform: uppercase; font-size: 0.85rem; }
-  .nav-btn.active, .nav-btn:hover { background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border-color: transparent; color: #fff; box-shadow: 0 0 15px rgba(0,229,255,0.4); }
-
-  /* Sections SPA */
-  #ui-layer { flex: 1; padding: 30px; max-width: 1300px; width: 100%; margin: 0 auto; position: relative; z-index: 10; }
-  .view-section { display: none; animation: fadeIn 0.3s forwards; }
-  .view-section.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  
-  h2.section-title { font-family: 'Impact', sans-serif; font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
-  .card { background: var(--bg-card); border: 1px solid rgba(255,0,85,0.3); border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-
-  /* Démo Hello World Interactive */
-  .demo-container { text-align: center; padding: 60px 20px; }
-  .glitch-title { font-family: 'Impact', sans-serif; font-size: 6rem; text-transform: uppercase; color: var(--accent-pink); text-shadow: 0 0 20px var(--accent-pink), 0 0 40px var(--accent-cyan); letter-spacing: 5px; animation: glitch 1.5s infinite; margin-bottom: 40px; }
-  .trigger-banner { width: 400px; height: 80px; margin: 0 auto; background: linear-gradient(to bottom, #000 33%, var(--accent-yellow) 33%, var(--accent-yellow) 66%, #000 66%); border: 4px solid #fff; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.1s; }
-  .trigger-banner:active { transform: scale(0.92); box-shadow: 0 0 40px rgba(255, 0, 85, 0.9); }
-  .trigger-banner span { color: #fff; font-size: 1.5rem; letter-spacing: 2px; background: rgba(0, 0, 0, 0.8); padding: 5px 15px; font-family: 'Impact'; }
-  @keyframes glitch { 0% { text-shadow: 3px 3px 0 #00ffff, -3px -3px 0 #ff0055; } 50% { text-shadow: -3px 3px 0 #00ffff, 3px -3px 0 #ff0055; } 100% { text-shadow: 3px -3px 0 #00ffff, -3px -3px 0 #ff0055; } }
-
-  /* Éditeur & Preview */
-  .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 600px; }
-  .editor-pane { display: flex; flex-direction: column; background: #0a0d18; border: 1px solid var(--accent-cyan); border-radius: 8px; padding: 15px; }
-  .editor-pane h3 { color: var(--accent-yellow); margin-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
-  .code-area { flex: 1; background: transparent; color: #fff; border: none; font-family: monospace; font-size: 1rem; resize: none; line-height: 1.5; }
-  .code-area:focus { outline: none; }
-  .preview-box { flex: 1; background: #fff; color: #000; border-radius: 4px; padding: 15px; overflow-y: auto; }
-
-  /* Forum Q&A */
-  .forum-thread { border-left: 4px solid var(--accent-cyan); padding: 15px 20px; background: rgba(0, 229, 255, 0.05); margin-bottom: 15px; border-radius: 0 8px 8px 0; }
-  .thread-q { color: var(--accent-yellow); font-weight: bold; font-size: 1.2rem; margin-bottom: 8px; }
-  .thread-a { color: var(--text-muted); line-height: 1.5; }
-  .admin-badge { background: var(--accent-pink); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 8px; text-transform: uppercase; }
-</style>
-<body>
-<div id="app-wrapper">
-<div id="modal-layer"></div>
-<canvas id="canvas-bg"></canvas>
-<section id="ui-layer">
-<script>
-
-<!-- ================= 2. VALEURS, ATTRIBUTS & ROUTAGES TERTIAIRES (Noyau Dynamoactif) ================= -->
-<Value>
+  body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+<header id="coff-header">
+<main id="coff-main">
+<sections id="coff-sections">
+<articles id="coff-articles">
+<div id="coff-hub-ui">
 <co id="SpaEngine">
-<co id="CookieProtocol">
-<co id="InteractivePhysics">
-
-  /* Routages Sémantiques COFF */
-  <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
-  <b2> CodeInput ➡️➡️ LivePreview 🔄 </b2>
-  <c3> CookieAccept ➡️➡️ UnlockSystem 🔓 </c3>
-  <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
-  <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
-
+<co id="PhysicsEngine">
 <script>
-  // --- INJECTION DE LA MATIÈRE (Interface SPA générée par le noyau) ---
-  const uiLayer = document.getElementById('ui-layer');
-  const modalLayer = document.getElementById('modal-layer');
-  
-  // Modale Cookies
-  modalLayer.innerHTML = `
-    <div class="modal-card">
-      <h2>⚠️ Habilitation Système</h2>
-      <p>L'activation du Miroir Absolu nécessite votre autorisation pour initialiser les <b>Cookies de session</b>, le <b>moteur de particules</b> et le <b>synthétiseur audio Chiptune</b> embarqué.</p>
-      <button class="btn-accept" id="btn-consent">🚀 Autoriser & Activer le Noyau</button>
-    </div>
-  `;
 
-  // Application Principale
-  uiLayer.innerHTML = `
-    <header>
-      <div class="logo">COFF <span>V5</span></div>
-      <nav>
-        <button class="nav-btn active" data-target="articles">Articles</button>
-        <button class="nav-btn" data-target="demo">Démo Interactive</button>
-        <button class="nav-btn" data-target="editor">Éditeur & Preview</button>
-        <button class="nav-btn" data-target="forum">Forum Q&A</button>
-      </nav>
-    </header>
+  /* ================= 2. VALEURS, ATTRIBUTS & ROUTAGES TERTIAIRES ================= */
+  <Value>
+    <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
+    <b2> CodeInput ➡️➡️ LivePreview 🔄 </b2>
+    <c3> CookieAccept ➡️➡️ UnlockSystem 🔓 </c3>
+    <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
+    <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
+  </Value>
 
-    <!-- SECTION: ARTICLES -->
-    <div id="articles" class="view-section active">
-      <h2 class="section-title">Manifeste & Architecture</h2>
-      <div class="card">
-        <h3 style="color:var(--accent-cyan); margin-bottom:10px;">Le Temps Dynamoactif</h3>
-        <p>Contrairement au sablier statique, le Miroir Absolu dynamoactif maintient le centre (le &lt;script&gt;) en fusion permanente. Les balises d'ouverture et de fermeture encadrent la page, mais le flux de données (&lt;co🔃&gt;) crée une boucle temporelle infinie qui met à jour l'interface sans jamais briser le scellement LIFO (Last In, First Out).</p>
-      </div>
-      <div class="card">
-        <h3 style="color:var(--accent-yellow); margin-bottom:10px;">Syntaxe Alphanumérique Pure</h3>
-        <p>Les connecteurs tertiaires dirigent le comportement :<br>
-        <b>a1 à z9 :</b> Actions ponctuelles, ponts systèmes, et protocoles sécurisés.<br>
-        <b>&lt;co🔄&gt; / &lt;co🔃&gt; :</b> Réservés exclusivement aux boucles automatiques et aux rendus continus en arrière-plan (Canvas, requêtes serveurs).</p>
-      </div>
-    </div>
+  /* === RÉFRACTION : MOTEUR D'INTERFACE ET DE LOGIQUE === */
+  document.addEventListener("DOMContentLoaded", () => {
+    
+    // 1. Injection du Canvas de fond (Moteur Physique)
+    const canvas = document.createElement('canvas');
+    canvas.id = 'canvas-bg';
+    canvas.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1; pointer-events:none;';
+    document.body.appendChild(canvas);
 
-    <!-- SECTION: DÉMO HELLO WORLD -->
-    <div id="demo" class="view-section">
-      <h2 class="section-title">Hello World Rétro</h2>
-      <div class="demo-container">
-        <h1 class="glitch-title" id="glitch-text">HELLO WORLD</h1>
-        <div class="trigger-banner" id="trigger-btn">
-          <span>DÉCLENCHER COFF</span>
+    // 2. Injection de la SPA et du Hub au-dessus du miroir
+    const uiLayer = document.createElement('div');
+    uiLayer.style.cssText = 'position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;';
+    
+    uiLayer.innerHTML = `
+      <!-- En-tête -->
+      <div style="background:var(--bg-secondary); border-bottom:2px solid var(--accent-pink); padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-family:'Impact'; font-size:2rem; color:var(--accent-pink); letter-spacing:2px;">COFF <span style="color:var(--accent-cyan);">V5</span></div>
+        <div style="display:flex; gap:10px;">
+          <button class="nav-btn active" data-target="view-articles" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Articles</button>
+          <button class="nav-btn" data-target="view-demo" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Démo Interactive</button>
+          <button class="nav-btn" data-target="view-editor" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Éditeur</button>
+          <button class="nav-btn" data-target="view-forum" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Forum Q&A</button>
         </div>
       </div>
-    </div>
 
-    <!-- SECTION: ÉDITEUR & PREVIEW -->
-    <div id="editor" class="view-section">
-      <h2 class="section-title">Environnement de Code</h2>
-      <div class="editor-grid">
-        <div class="editor-pane">
-          <h3>Saisie COFF Brute</h3>
-          <textarea class="code-area" id="coff-input">&lt;Value&gt;\n&lt;co id="TestModule"&gt;\n  &lt;a1&gt; Action ➡️ Result ⚡ &lt;/a1&gt;\n  &lt;h1 style="color:#ff0055;"&gt;Titre Injecté&lt;/h1&gt;\n  &lt;p&gt;Ceci est un test de rendu en temps réel dans la matrice COFF.&lt;/p&gt;\n&lt;/co&gt;\n&lt;/Value&gt;</textarea>
+      <!-- Conteneur de Vues -->
+      <div style="padding:30px; max-width:1200px; margin:0 auto; width:100%;">
+        
+        <!-- VUE: ARTICLES -->
+        <div id="view-articles" class="view-section" style="display:block;">
+          <h2 style="color:var(--accent-cyan); font-family:'Impact'; font-size:2.5rem; margin-bottom:20px;">Manifeste & Architecture</h2>
+          <div style="background:#171b30; border:1px solid rgba(255,0,85,0.3); padding:20px; border-radius:8px; margin-bottom:20px;">
+            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Réfractif</h3>
+            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">La structure d'entonnoir est parfaitement respectée. Le JavaScript injecte l'interface visuelle par réfraction depuis le centre, tout en maintenant l'intégrité de la mémoire spatio-temporelle.</p>
+          </div>
         </div>
-        <div class="editor-pane">
-          <h3>Rendu Dynamique</h3>
-          <div class="preview-box" id="coff-preview"></div>
+
+        <!-- VUE: DÉMO HELLO WORLD -->
+        <div id="view-demo" class="view-section" style="display:none; text-align:center;">
+          <h1 style="font-family:'Impact'; font-size:6rem; color:var(--accent-pink); text-shadow:0 0 20px var(--accent-pink), 0 0 40px var(--accent-cyan); margin:40px 0;">HELLO WORLD</h1>
+          <button id="trigger-btn" style="background:linear-gradient(90deg, var(--accent-yellow), #ffaa00); border:none; padding:15px 30px; font-size:1.5rem; font-family:'Impact'; cursor:pointer; color:#000;">DÉCLENCHER COFF ☢️</button>
         </div>
+
+        <!-- VUE: ÉDITEUR -->
+        <div id="view-editor" class="view-section" style="display:none;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Test de réfraction&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
+            <div id="coff-preview" style="background:#fff; color:#000; padding:15px; overflow:auto;"></div>
+          </div>
+        </div>
+
+        <!-- VUE: FORUM -->
+        <div id="view-forum" class="view-section" style="display:none;">
+          <div style="background:rgba(0, 229, 255, 0.05); border-left:4px solid var(--accent-cyan); padding:15px; margin-bottom:15px;">
+            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Pourquoi le code source est-il inversé dans les navigateurs ?</h4>
+            <p style="color:var(--text-muted);">R: C'est le principe du Miroir Dynamoactif. Le navigateur casse visuellement l'arbre DOM dans l'inspecteur, mais le serveur et le cache traitent le fichier selon la vraie hiérarchie LIFO, accélérant la lecture de la base de données vers l'UI.</p>
+          </div>
+        </div>
+
       </div>
-    </div>
+    `;
+    document.body.appendChild(uiLayer);
 
-    <!-- SECTION: FORUM -->
-    <div id="forum" class="view-section">
-      <h2 class="section-title">Base de Connaissances & Communauté</h2>
-      <div class="card">
-        <div class="forum-thread">
-          <div class="thread-q">Q: Le format COFF est-il compatible avec les plateformes de PWA comme Base44 ?</div>
-          <div class="thread-a"><span class="admin-badge">Admin Samintox</span>Absolument. ViArtificial Labs utilise ce standard exact pour déployer ses architectures hybrides sur Base44. La tolérance aux pannes des navigateurs permet à la structure LIFO d'être compilée instantanément en tant que PWA sans rejets du parseur.</div>
+    // 3. Modale Cookies (Autorisations)
+    if (!localStorage.getItem('coff_auth')) {
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.9); z-index:9999; display:flex; justify-content:center; align-items:center;';
+      modal.innerHTML = `
+        <div style="background:#171b30; border:2px solid var(--accent-pink); padding:40px; text-align:center; border-radius:10px;">
+          <h2 style="color:var(--accent-cyan); font-family:'Impact';">⚠️ HABILITATION REQUISE</h2>
+          <p style="margin:20px 0; color:var(--text-muted);">Cookies et API Audio requis pour le noyau dynamoactif.</p>
+          <button id="accept-btn" style="background:var(--accent-pink); border:none; color:#fff; padding:10px 20px; font-weight:bold; cursor:pointer;">AUTORISER</button>
         </div>
-        <div class="forum-thread">
-          <div class="thread-q">Q: Le navigateur ne détruit-il pas l'effet miroir en réorganisant le DOM ?</div>
-          <div class="thread-a"><span class="admin-badge">Admin Samintox</span>Dans l'inspecteur DOM (F12), oui, le moteur V8 réorganise les balises pour l'affichage visuel (HTMLUnknownElement). Mais dans le <b>code source brut</b> lu par le serveur et le cache réseau, le Miroir Absolu reste intact. C'est ce qui garantit la vitesse de traitement de la pile d'exécution.</div>
-        </div>
-        <div class="forum-thread">
-          <div class="thread-q">Q: Pourquoi le synthétiseur audio nécessite-t-il la modale de consentement ?</div>
-          <div class="thread-a"><span class="admin-badge">Admin Samintox</span>C'est une restriction de l'API Web Audio moderne (Chrome/Safari). Un contexte audio ne peut être activé (<code>audioCtx.resume()</code>) qu'après une interaction physique explicite de l'utilisateur. La modale gère le routage <code>&lt;c3&gt; CookieAccept ➡️➡️ UnlockSystem</code>.</div>
-        </div>
-      </div>
-    </div>
-  `;
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('accept-btn').addEventListener('click', () => {
+        localStorage.setItem('coff_auth', 'true');
+        modal.remove();
+        initAudio();
+      });
+    } else {
+      initAudio();
+    }
 
-  // --- LOGIQUE D'EXÉCUTION JS ---
-
-  // 1. Gestionnaire SPA (Onglets)
-  const tabs = document.querySelectorAll('.nav-btn');
-  const sections = document.querySelectorAll('.view-section');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      sections.forEach(s => s.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.target).classList.add('active');
+    // 4. Logique SPA (Onglets)
+    const tabs = document.querySelectorAll('.nav-btn');
+    const views = document.querySelectorAll('.view-section');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => { t.style.background = 'transparent'; t.style.color = '#fff'; });
+        views.forEach(v => v.style.display = 'none');
+        tab.style.background = 'linear-gradient(90deg, var(--accent-pink), var(--accent-cyan))';
+        document.getElementById(tab.dataset.target).style.display = 'block';
+      });
     });
-  });
 
-  // 2. Éditeur Live Preview
-  const coffInput = document.getElementById('coff-input');
-  const coffPreview = document.getElementById('coff-preview');
-  const updatePreview = () => {
-    // Nettoie les balises COFF abstraites pour le rendu visuel pur HTML
-    let rawCode = coffInput.value;
-    let cleanHTML = rawCode.replace(/<Value>|<\/Value>|<co[^>]*>|<\/co>|<[a-z][0-9][^>]*>.*<\/[a-z][0-9]>/g, "");
-    coffPreview.innerHTML = cleanHTML;
-  };
-  coffInput.addEventListener('input', updatePreview);
-  updatePreview();
+    // 5. Éditeur Live Preview
+    const input = document.getElementById('coff-input');
+    const preview = document.getElementById('coff-preview');
+    input.addEventListener('input', () => {
+      preview.innerHTML = input.value.replace(/<Value>|<\/Value>|<[a-z][0-9][^>]*>.*<\/[a-z][0-9]>/g, "");
+    });
+    preview.innerHTML = input.value.replace(/<Value>|<\/Value>|<[a-z][0-9][^>]*>.*<\/[a-z][0-9]>/g, "");
 
-  // 3. Système de Cookies & Moteur Interactif
-  let audioCtx;
-  const canvas = document.getElementById('canvas-bg');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
+    // 6. Moteur Cinétique et Synthétiseur (Hello World)
+    let audioCtx;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
 
-  function setCookie(name, value, days) {
-    let date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
-  }
-
-  function getCookie(name) {
-    let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-  }
-
-  function initEngine() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    modalLayer.style.display = 'none';
-    resizeCanvas();
-    animateCanvas();
-  }
-
-  if (getCookie("coff_authorized") === "true") {
-    modalLayer.style.display = 'none';
-    // L'audioCtx sera initialisé au premier clic sur la bannière pour respecter les règles navigateurs
-  }
-
-  document.getElementById('btn-consent').addEventListener('click', () => {
-    setCookie("coff_authorized", "true", 30);
-    initEngine();
-  });
-
-  // 4. Physique et Rétro Gaming (Le Hello World)
-  function resizeCanvas() {
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
 
-  class Particle {
-    constructor(x, y) {
-      this.x = x; this.y = y;
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 5;
-      this.vx = Math.cos(angle) * speed;
-      this.vy = Math.sin(angle) * speed;
-      this.size = Math.random() * 12 + 4;
-      const colors = ['#ff0055', '#00e5ff', '#ffcc00', '#ffffff'];
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-      this.alpha = 1;
-      this.decay = Math.random() * 0.03 + 0.01;
+    function initAudio() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    update() {
-      this.x += this.vx; this.y += this.vy;
-      this.vx *= 0.90; this.vy *= 0.90;
-      this.alpha -= this.decay;
-    }
-    draw() {
-      ctx.save();
-      ctx.globalAlpha = Math.max(this.alpha, 0);
-      ctx.fillStyle = this.color;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = this.color;
-      ctx.fillRect(this.x, this.y, this.size, this.size);
-      ctx.restore();
-    }
-  }
 
-  function playChiptune(freq, duration) {
-    if (!audioCtx) initEngine();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-  }
+    document.getElementById('trigger-btn').addEventListener('pointerdown', (e) => {
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      const rect = e.target.getBoundingClientRect();
+      for(let i=0; i<150; i++) {
+        particles.push({
+          x: rect.left + rect.width/2, y: rect.top + rect.height/2,
+          vx: (Math.random()-0.5)*30, vy: (Math.random()-0.5)*30,
+          color: ['#ff0055', '#00e5ff', '#ffcc00'][Math.floor(Math.random()*3)],
+          alpha: 1
+        });
+      }
+      if(audioCtx) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(165, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+      }
+    });
 
-  document.getElementById('trigger-btn').addEventListener('pointerdown', (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    
-    for (let i = 0; i < 200; i++) particles.push(new Particle(x, y));
-    
-    playChiptune(165, 0.1);
-    setTimeout(() => playChiptune(330, 0.1), 80);
-    setTimeout(() => playChiptune(660, 0.2), 160);
-    
-    const title = document.getElementById('glitch-text');
-    title.style.color = "#fff";
-    setTimeout(() => title.style.color = "var(--accent-pink)", 150);
+    function loop() {
+      ctx.fillStyle = 'rgba(5, 5, 10, 0.3)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.9; p.vy *= 0.9; p.alpha -= 0.02;
+        ctx.globalAlpha = Math.max(p.alpha, 0);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 8, 8);
+        if(p.alpha <= 0) particles.splice(i, 1);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(loop);
+    }
+    loop();
   });
-
-  function animateCanvas() {
-    ctx.fillStyle = 'rgba(5, 5, 10, 0.3)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (let i = particles.length - 1; i >= 0; i--) {
-      particles[i].update();
-      particles[i].draw();
-      if (particles[i].alpha <= 0) particles.splice(i, 1);
-    }
-    requestAnimationFrame(animateCanvas);
-  }
-  
-  if(getCookie("coff_authorized") === "true") animateCanvas();
-
 </script>
 
 <!-- ================= 3. FERMETURES (Le Miroir Absolu) ================= -->
 </co>
 </co>
-</co>
-</Value>
-</script>
-</section>
 </div>
-</div>
-</body>
+</articles>
+</sections>
+</main>
+</header>
 </style>
-</title>
+</bibliotheque>
 </meta>
 </meta>
-</head>
 </html>
+
