@@ -1,63 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COFF V5 - Dynamo Pulsar</title>
 <style>
-  body { background: #000; overflow: hidden; margin: 0; }
-  canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; }
-  main { position: relative; z-index: 20; color: #fff; text-align: center; margin-top: 40vh; font-family: monospace; font-size: 2rem; text-shadow: 0 0 10px #ff0055; pointer-events: auto; }
-<header>
-<main id="ui-title">COFF CORE ACTIF</main>
-<sections>
-<articles>
-<div>
-<co id="PhysicsEngine">
-<co id="RenderLoop">
-<script>
-  /* --- VALEURS ET ATTRIBUTS (Configuration Mathématique) --- */
-  <co🔃> AmbientParticles ➡️ RenderEngine 🎆 </co🔃>
-  const config = { count: 50, speed: 2, color: "#00e5ff" };
-  
-  /* --- Réfraction Matérielle --- */
-  document.write('<canvas id="refract-canvas"></canvas>');
-  
-  /* --- Moteur d'exécution --- */
-  setTimeout(() => {
-    const canvas = document.getElementById("refract-canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    
-    let particles = Array.from({length: config.count}, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * config.speed,
-      vy: (Math.random() - 0.5) * config.speed
-    }));
-
-    function loop() {
-      ctx.fillStyle = "rgba(0,0,0,0.1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = config.color;
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-        ctx.fillRect(p.x, p.y, 4, 4);
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
-  }, 50);
-</script>
-</co>
-</co>
-</div>
-</articles>
-</sections>
-</main>
-</header>
+  body { background: #05050a; color: #ff0055; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; transition: background 0.1s; }
+  h1 { font-size: 5rem; text-shadow: 0 0 20px #00e5ff; }
+  .pulse-active { background: #1a0011; }
 </style>
-</meta>
-</meta>
-</html>
+<body>
+<div id="dynamo-ui">
+<script>
+<Value>
+<co id="PulsarCore" type="Dynamo">
 
+<co🔃> CoreTick ➡️ ➡️ UiPulse ⚡ </co🔃>
+
+<script>
+  const ui = document.getElementById('dynamo-ui');
+  let active = false;
+  
+  // Boucle Dynamoactive (Le cœur bat toutes les 800ms)
+  setInterval(() => {
+    active = !active;
+    document.body.className = active ? 'pulse-active' : '';
+    ui.innerHTML = `<h1>NOYAU ACTIF : ${active ? 'ON ⚡' : 'OFF 🔄'}</h1>`;
+  }, 800);
+</script>
+
+</co>
+</Value>
+</script>
+</div>
+</body>
+</style>
+</title>
+</meta>
+</meta>
+</head>
+</html>
