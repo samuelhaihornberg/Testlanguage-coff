@@ -1,75 +1,63 @@
 <!DOCTYPE html>
-
-<!-- ================= 1. OUVERTURES (L'Entonnoir Spatio-Temporel Corrigé) ================= -->
 <html lang="fr">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-<bibliotheque>
+  body { background: #000; overflow: hidden; margin: 0; }
+  canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; }
+  main { position: relative; z-index: 20; color: #fff; text-align: center; margin-top: 40vh; font-family: monospace; font-size: 2rem; text-shadow: 0 0 10px #ff0055; pointer-events: auto; }
+<header>
+<main id="ui-title">COFF CORE ACTIF</main>
 <sections>
+<articles>
+<div>
+<co id="PhysicsEngine">
+<co id="RenderLoop">
 <script>
-<div id="coff-hub-ui">
-<co id="CoffHubEngine" type="PlatformCore">
-<co id="HubCo" type="ConnectionProtocol">
-
-
-<!-- ================= 2. VALEURS, ATTRIBUTS & MATIÈRE (Le Noyau) ================= -->
-
-  /* --- VALEURS COFF (Routages Tertiaires) --- */
-  <a1> NavClick ➡️ ViewSwitch ⚡ </a1>
-  <b2> PostButton ➡️➡️ DataThread 📩 </b2>
-  <d4> HubCoSubmit ➡️➡️ ConnectHubCo 🔗 </d4>
-  <co🔄> CompilerCheck ↕️ ValidateMirror 💎 </co🔄>
+  /* --- VALEURS ET ATTRIBUTS (Configuration Mathématique) --- */
   <co🔃> AmbientParticles ➡️ RenderEngine 🎆 </co🔃>
+  const config = { count: 50, speed: 2, color: "#00e5ff" };
+  
+  /* --- Réfraction Matérielle --- */
+  document.write('<canvas id="refract-canvas"></canvas>');
+  
+  /* --- Moteur d'exécution --- */
+  setTimeout(() => {
+    const canvas = document.getElementById("refract-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    
+    let particles = Array.from({length: config.count}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * config.speed,
+      vy: (Math.random() - 0.5) * config.speed
+    }));
 
-  /* --- CSS (Attributs visuels) --- */
-  :root { --bg-primary: #05050a; --bg-secondary: #101424; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --text-main: #f0f0f5; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body { background: var(--bg-primary); color: var(--text-main); }
-  header { background: var(--bg-secondary); border-bottom: 2px solid var(--accent-pink); padding: 15px 30px; display: flex; justify-content: space-between; }
-  .logo { font-size: 1.8rem; color: var(--accent-pink); font-weight: bold; }
-  .nav-btn { background: transparent; border: 1px solid var(--accent-cyan); color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-  .card { background: #171b30; border: 1px solid rgba(255,0,85,0.3); border-radius: 10px; padding: 25px; margin: 20px; }
-
-  /* --- JS (Logique d'exécution) --- */
-  function switchView(viewId) {
-    console.log("⚡ Routage <a1> activé vers : " + viewId);
-    alert("Transition vers " + viewId + " validée par le noyau COFF.");
-  }
-
-  /* --- HTML (Valeurs de Contenu UI) --- */
-  <header>
-    <div class="logo">COFF <span>HUB</span></div>
-    <nav>
-      <button class="nav-btn" onclick="switchView('articles')">Manifeste</button>
-      <button class="nav-btn" onclick="switchView('hubco')">🔗 Hub Co</button>
-    </nav>
-  </header>
-
-  <main>
-    <article class="card warning">
-      <h3 style="color: #ff3333;">⚠️ Patch d'Architecture Validé</h3>
-      <p>L'ordre des couches a été corrigé. Le &lt;style&gt; précède désormais la &lt;bibliotheque&gt;, et les &lt;sections&gt; englobent le &lt;script&gt; pour une exécution LIFO optimale et sans erreur dans le log du navigateur.</p>
-    </article>
-
-    <article class="card">
-      <h3 style="color: var(--accent-cyan);">Dictionnaire Alphanumérique</h3>
-      <p>A = Action Physique | B = Bridge Système | C = Continuité | D = Data Hub</p>
-      <p>1 = Immédiat (⚡) | 2 = Profond (➡️➡️) | 4 = Chiffré (🔗) | 5 = Boost (☢️)</p>
-    </article>
-  </main>
-
-
-<!-- ================= 3. FERMETURES (Le Miroir Absolu) ================= -->
+    function loop() {
+      ctx.fillStyle = "rgba(0,0,0,0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = config.color;
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
+  }, 50);
+</script>
 </co>
 </co>
 </div>
-</script>
+</articles>
 </sections>
-</bibliotheque>
+</main>
+</header>
 </style>
 </meta>
 </meta>
 </html>
-
 
