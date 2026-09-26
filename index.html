@@ -1,214 +1,124 @@
-
 <!DOCTYPE html>
 <html lang="fr">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<bibliotheque>
+<title>Hello World - COFF V4 Logique Absolue</title>
 <style>
-  :root { --bg-primary: #05050a; --bg-secondary: #101424; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --accent-yellow: #ffcc00; --text-main: #f0f0f5; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
-  canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
-<header>
-<main>
-<sections>
-<articles>
-
-<!-- ================= 2. VALEURS & CONTENEURS (Purifiés) ================= -->
-<Value>
-<co>
-<co>
-
-  <!-- Routages Tertiaires COFF -->
-  <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
-  <b2> CodeInput ➡️➡️ LivePreview 🔄 </b2>
-  <c3> CookieAccept ➡️➡️ UnlockSystem 🔓 </c3>
-  <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
-  <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
-
-<div>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
+  #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
+  .container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; pointer-events: none; }
+  h1 { font-size: 6rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055; letter-spacing: 5px; animation: glitch 1.5s infinite; transition: all 0.2s ease; }
+  #trigger-banner { width: 400px; height: 80px; background: linear-gradient(to bottom, #000 33%, #fc0 33%, #fc0 66%, #000 66%); border: 4px solid #fff; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
+  #trigger-banner:active { transform: scale(0.92); box-shadow: 0 0 40px rgba(255, 0, 85, 0.9); }
+  #trigger-banner span { color: #fff; font-size: 1.5rem; letter-spacing: 2px; background: rgba(0, 0, 0, 0.8); padding: 5px 15px; }
+  #consent-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; pointer-events: auto; }
+  .modal-card { background: #101424; border: 2px solid #ff0055; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); }
+  .btn-accept { background: linear-gradient(90deg, #ff0055, #00e5ff); border: none; color: #fff; padding: 12px 24px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
+  @keyframes glitch { 0% { text-shadow: 3px 3px 0 #0ff, -3px -3px 0 #f05; } 50% { text-shadow: -3px 3px 0 #0ff, 3px -3px 0 #f05; } 100% { text-shadow: 3px -3px 0 #0ff, -3px -3px 0 #f05; } }
+  .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
+</style>
+<body>
+<div id="consent-modal">
+  <div class="modal-card">
+    <h2>⚠️ Système COFF en attente</h2>
+    <button class="btn-accept" onclick="acceptConsent()">🚀 Activer</button>
+  </div>
+</div>
+<canvas id="canvas-bg"></canvas>
+<div class="container">
+  <h1 id="title">HELLO WORLD 🚀</h1>
+  <div id="trigger-banner"><span>DÉCLENCHER</span></div>
+</div>
 <script>
-  /* === RÉFRACTION : MOTEUR D'INTERFACE ET DE LOGIQUE === */
-  document.addEventListener("DOMContentLoaded", () => {
-    
-    // 1. Injection du Canvas de fond
-    const canvas = document.createElement('canvas');
-    canvas.id = 'canvas-bg';
-    document.body.appendChild(canvas);
 
-    // 2. Injection de la SPA dans la couche <div> pure
-    const uiContainer = document.querySelector('div'); // Cible directement la couche de protection
-    uiContainer.style.cssText = 'position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;';
-    
-    uiContainer.innerHTML = `
-      <!-- En-tête -->
-      <div style="background:var(--bg-secondary); border-bottom:2px solid var(--accent-pink); padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
-        <div style="font-family:'Impact'; font-size:2rem; color:var(--accent-pink); letter-spacing:2px;">COFF <span style="color:var(--accent-cyan);">V5</span></div>
-        <div style="display:flex; gap:10px;">
-          <button class="nav-btn active" data-target="view-articles" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Articles</button>
-          <button class="nav-btn" data-target="view-demo" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Démo Interactive</button>
-          <button class="nav-btn" data-target="view-editor" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Éditeur</button>
-          <button class="nav-btn" data-target="view-forum" style="background:transparent; border:1px solid var(--accent-cyan); color:#fff; padding:8px 16px; cursor:pointer;">Forum Q&A</button>
-        </div>
-      </div>
+<!-- ================= 2. LES VALEURS (Entrées COFF & Routages) ================= -->
+<Value>
+<co id="CoffSystemRoot" type="AppModule">
+<co property="AudioEngine" state="standby">
+<co property="VisualEngine" symbol="🎆">
+<co id="BoostEngine" type="CoreMultiplier">
 
-      <!-- Conteneur de Vues -->
-      <div style="padding:30px; max-width:1200px; margin:0 auto; width:100%;">
-        
-        <!-- VUE: ARTICLES -->
-        <div id="view-articles" class="view-section" style="display:block;">
-          <h2 style="color:var(--accent-cyan); font-family:'Impact'; font-size:2.5rem; margin-bottom:20px;">Manifeste & Architecture</h2>
-          <div style="background:#171b30; border:1px solid rgba(255,0,85,0.3); padding:20px; border-radius:8px; margin-bottom:20px;">
-            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Pur</h3>
-            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">L'entonnoir est purgé de tout identifiant superflu. Les balises d'ouverture sont des dimensions vierges. Le script, situé dans l'ultime <code>&lt;div&gt;</code>, irradie vers l'extérieur.</p>
-          </div>
-        </div>
+<coA1> BannerClick ➡️ ActionTrigger ⚡ </coA1>
+<coB2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </coB2>
+<coC3> BassAmplitude ↕️ ParticleVelocity 📈 </coC3>
+<coD4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </coD4>
 
-        <!-- VUE: DÉMO HELLO WORLD -->
-        <div id="view-demo" class="view-section" style="display:none; text-align:center;">
-          <h1 id="glitch-text" style="font-family:'Impact'; font-size:6rem; color:var(--accent-pink); text-shadow:0 0 20px var(--accent-pink), 0 0 40px var(--accent-cyan); margin:40px 0;">HELLO WORLD</h1>
-          <button id="trigger-btn" style="background:linear-gradient(90deg, var(--accent-yellow), #ffaa00); border:none; padding:15px 30px; font-size:1.5rem; font-family:'Impact'; cursor:pointer; color:#000;">DÉCLENCHER COFF ☢️</button>
-        </div>
+<!-- ================= MOTEUR JS ================= -->
+<script>
+  const canvas = document.getElementById('canvas-bg'), ctx = canvas.getContext('2d'), banner = document.getElementById('trigger-banner'), title = document.getElementById('title');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  let particles = [], audioCtx, clickCombo = 0, comboTimer;
 
-        <!-- VUE: ÉDITEUR -->
-        <div id="view-editor" class="view-section" style="display:none;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Matrice Sans ID&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
-            <div id="coff-preview" style="background:#fff; color:#000; padding:15px; overflow:auto;"></div>
-          </div>
-        </div>
+  function acceptConsent() { document.getElementById('consent-modal').style.display = 'none'; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
-        <!-- VUE: FORUM -->
-        <div id="view-forum" class="view-section" style="display:none;">
-          <div style="background:rgba(0, 229, 255, 0.05); border-left:4px solid var(--accent-cyan); padding:15px; margin-bottom:15px;">
-            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Comment le script cible-t-il l'UI sans ID ?</h4>
-            <p style="color:var(--text-muted);">R: Grâce à l'architecture géométrique. Il n'y a qu'un seul <code>&lt;div&gt;</code> structurel avant le script. Le JavaScript cible simplement cette dimension par sa nature intrinsèque, prouvant l'inutilité des ID sur l'enveloppe LIFO.</p>
-          </div>
-        </div>
+  class Particle {
+    constructor(x, y, color, isBoosted) {
+      this.x = x; this.y = y; const angle = Math.random() * Math.PI * 2;
+      const speed = isBoosted ? Math.random() * 40 + 10 : Math.random() * 20 + 5;
+      this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+      this.size = isBoosted ? Math.random() * 20 + 8 : Math.random() * 12 + 4;
+      this.color = color; this.alpha = 1; this.decay = isBoosted ? Math.random() * 0.04 + 0.02 : Math.random() * 0.02 + 0.01;
+    }
+    update() { this.x += this.vx; this.y += this.vy; this.vx *= 0.92; this.vy *= 0.92; this.alpha -= this.decay; }
+    draw() { ctx.save(); ctx.globalAlpha = Math.max(this.alpha, 0); ctx.fillStyle = this.color; ctx.shadowBlur = 20; ctx.shadowColor = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); ctx.restore(); }
+  }
 
-      </div>
-    `;
+  function triggerExplosion(x, y, isBoosted) {
+    const colors = isBoosted ? ['#ffffff', '#ffcc00', '#ff0000', '#00ffcc'] : ['#ff0055', '#00e5ff', '#ffcc00'];
+    const count = isBoosted ? 400 : 150;
+    for (let i = 0; i < count; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], isBoosted));
+  }
 
-    // 3. Modale Cookies (Autorisations)
-    if (!localStorage.getItem('coff_auth')) {
-      const modal = document.createElement('div');
-      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.95); z-index:9999; display:flex; justify-content:center; align-items:center;';
-      modal.innerHTML = `
-        <div style="background:#171b30; border:2px solid var(--accent-pink); padding:40px; text-align:center; border-radius:10px; max-width:500px;">
-          <h2 style="color:var(--accent-cyan); font-family:'Impact'; letter-spacing:2px;">⚠️ HABILITATION REQUISE</h2>
-          <p style="margin:20px 0; color:var(--text-muted); line-height:1.5;">Le Miroir Absolu nécessite votre autorisation pour initialiser les Cookies, le moteur de particules et l'audio Chiptune embarqué.</p>
-          <button id="accept-btn" style="background:linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border:none; color:#fff; padding:12px 24px; font-weight:bold; font-size:1.1rem; cursor:pointer; border-radius:6px;">🚀 AUTORISER & ACTIVER</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-      document.getElementById('accept-btn').addEventListener('click', () => {
-        localStorage.setItem('coff_auth', 'true');
-        modal.remove();
-        initAudio();
-        animateCanvas();
-      });
+  function playSound(freq, duration, type = 'square') {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+  }
+
+  banner.addEventListener('pointerdown', () => {
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    clickCombo++; clearTimeout(comboTimer);
+    const rect = banner.getBoundingClientRect(), centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
+
+    if (clickCombo >= 4) {
+      title.classList.add('overload-text'); triggerExplosion(centerX, centerY, true);
+      playSound(110, 0.4, 'sawtooth'); playSound(880, 0.2, 'square');
     } else {
-      initAudio();
-      animateCanvas();
+      triggerExplosion(centerX, centerY, false);
+      playSound(165, 0.1); setTimeout(() => playSound(330, 0.1), 80);
     }
-
-    // 4. Logique SPA (Onglets)
-    const tabs = document.querySelectorAll('.nav-btn');
-    const views = document.querySelectorAll('.view-section');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => { t.style.background = 'transparent'; t.style.color = '#fff'; });
-        views.forEach(v => v.style.display = 'none');
-        tab.style.background = 'linear-gradient(90deg, var(--accent-pink), var(--accent-cyan))';
-        document.getElementById(tab.dataset.target).style.display = 'block';
-      });
-    });
-
-    // 5. Éditeur Live Preview
-    const input = document.getElementById('coff-input');
-    const preview = document.getElementById('coff-preview');
-    input.addEventListener('input', () => {
-      preview.innerHTML = input.value.replace(/<Value>|<\/Value>|<[a-z][0-9][^>]*>.*<\/[a-z][0-9]>/g, "");
-    });
-    preview.innerHTML = input.value.replace(/<Value>|<\/Value>|<[a-z][0-9][^>]*>.*<\/[a-z][0-9]>/g, "");
-
-    // 6. Moteur Cinétique et Synthétiseur (Hello World)
-    let audioCtx;
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    function initAudio() {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    document.getElementById('trigger-btn').addEventListener('pointerdown', (e) => {
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-      const rect = e.target.getBoundingClientRect();
-      for(let i=0; i<150; i++) {
-        particles.push({
-          x: rect.left + rect.width/2, y: rect.top + rect.height/2,
-          vx: (Math.random()-0.5)*30, vy: (Math.random()-0.5)*30,
-          color: ['#ff0055', '#00e5ff', '#ffcc00', '#ffffff'][Math.floor(Math.random()*4)],
-          alpha: 1
-        });
-      }
-      
-      const title = document.getElementById('glitch-text');
-      title.style.color = "#fff";
-      setTimeout(() => title.style.color = "var(--accent-pink)", 150);
-
-      if(audioCtx) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(165, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-      }
-    });
-
-    function animateCanvas() {
-      ctx.fillStyle = 'rgba(5, 5, 10, 0.3)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      for(let i = particles.length - 1; i >= 0; i--) {
-        let p = particles[i];
-        p.x += p.vx; p.y += p.vy;
-        p.vx *= 0.9; p.vy *= 0.9; p.alpha -= 0.02;
-        ctx.globalAlpha = Math.max(p.alpha, 0);
-        ctx.fillStyle = p.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
-        ctx.fillRect(p.x, p.y, 8, 8);
-        if(p.alpha <= 0) particles.splice(i, 1);
-      }
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-      requestAnimationFrame(animateCanvas);
-    }
+    comboTimer = setTimeout(() => { clickCombo = 0; title.classList.remove('overload-text'); }, 400); 
   });
+
+  function animate() {
+    requestAnimationFrame(animate); ctx.fillStyle = 'rgba(5, 5, 10, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) { particles[i].update(); particles[i].draw(); if (particles[i].alpha <= 0) particles.splice(i, 1); }
+  }
+  animate();
 </script>
 
-<!-- ================= 3. FERMETURES (Le Miroir Absolu Exact) ================= -->
-</div>
+<!-- ================= 3. LES BALISES CLOSES EN MIROIR EXACT ================= -->
+<!-- Fermetures COFF -->
+</co>
+</co>
 </co>
 </co>
 </Value>
-</articles>
-</sections>
-</main>
-</header>
+</script>
+
+<!-- Fermetures HTML -->
+</div>
+</div>
+</div>
+</body>
 </style>
-</bibliotheque>
+</title>
 </meta>
 </meta>
+</head>
 </html>
