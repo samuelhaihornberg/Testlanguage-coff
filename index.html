@@ -1,161 +1,184 @@
 <!DOCTYPE html>
+
+<!-- ================= 1. OUVERTURES PRINCIPALES (L'Entonnoir Spatial) ================= -->
 <html lang="fr">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COFF Hub - Communauté & Documentation</title>
+<body>
 <style>
-  :root { --bg-primary: #05050a; --bg-secondary: #101424; --bg-card: #171b30; --accent-pink: #ff0055; --accent-cyan: #00e5ff; --accent-yellow: #ffcc00; --text-main: #f0f0f5; --text-muted: #8892b0; --border-color: rgba(255, 0, 85, 0.3); }
+  :root { 
+    --bg-primary: #05050a; 
+    --bg-secondary: #101424; 
+    --bg-card: #171b30; 
+    --accent-pink: #ff0055; 
+    --accent-cyan: #00e5ff; 
+    --accent-yellow: #ffcc00; 
+    --text-main: #f0f0f5; 
+    --text-muted: #8892b0; 
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   body { background: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-  header { background: var(--bg-secondary); border-bottom: 2px solid var(--accent-pink); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
-  .logo { font-family: 'Impact', sans-serif; font-size: 1.8rem; color: var(--accent-pink); text-shadow: 0 0 10px var(--accent-pink); letter-spacing: 2px; }
+  
+  header { background: var(--bg-secondary); border-bottom: 2px solid var(--accent-pink); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: 'Impact', sans-serif; font-size: 1.8rem; color: var(--accent-pink); letter-spacing: 2px; }
   .logo span { color: var(--accent-cyan); }
-  nav { display: flex; gap: 10px; }
-  .nav-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; transition: all 0.2s ease; }
-  .nav-btn:hover, .nav-btn.active { background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border-color: transparent; color: #fff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
+  nav { display: flex; gap: 10px; flex-wrap: wrap; }
+  .nav-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+  .nav-btn.active, .nav-btn:hover { background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border-color: transparent; color: #fff; }
+  
   main { flex: 1; padding: 30px; max-width: 1200px; width: 100%; margin: 0 auto; }
-  .view-section { display: none; animation: fadeIn 0.3s ease; }
+  .view-section { display: none; animation: fadeIn 0.3s; } 
   .view-section.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-  h2 { font-family: 'Impact', sans-serif; font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
-  .article-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-  .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s; }
-  .card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); }
-  .card h3 { color: var(--accent-yellow); margin-bottom: 10px; font-size: 1.3rem; }
-  .card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; }
-  .tag { display: inline-block; background: rgba(255, 204, 0, 0.1); color: var(--accent-yellow); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 5px; }
-  .showcase-container { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-  .interactive-frame { width: 100%; height: 500px; background: #000; border: 2px solid var(--accent-pink); border-radius: 12px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-  .banner-demo { width: 350px; height: 70px; background: linear-gradient(to bottom, #000 33%, var(--accent-yellow) 33%, var(--accent-yellow) 66%, #000 66%); border: 3px solid #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); }
-  .banner-demo span { background: #000; color: #fff; padding: 5px 15px; font-family: 'Impact', sans-serif; letter-spacing: 2px; }
-  .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 550px; }
-  .editor-pane { display: flex; flex-direction: column; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; }
-  .editor-pane label { font-weight: bold; margin-bottom: 8px; color: var(--accent-cyan); font-size: 0.9rem; }
-  textarea { flex: 1; background: #0a0d18; color: var(--text-main); border: 1px solid var(--text-muted); border-radius: 6px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; resize: none; line-height: 1.4; }
-  textarea:focus { outline: none; border-color: var(--accent-pink); }
-  .compile-btn { margin-top: 10px; background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan)); border: none; color: #fff; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-  .forum-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .new-post-btn { background: var(--accent-cyan); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
-  .thread-list { display: flex; flex-direction: column; gap: 12px; }
-  .thread-card { background: var(--bg-card); border-left: 4px solid var(--accent-yellow); padding: 15px 20px; border-radius: 0 8px 8px 0; display: flex; justify-content: space-between; align-items: center; }
-  .thread-info h4 { color: var(--text-main); margin-bottom: 5px; font-size: 1.1rem; }
-  .thread-info p { color: var(--text-muted); font-size: 0.85rem; }
-  .thread-stats { text-align: right; color: var(--text-muted); font-size: 0.8rem; }
+  
+  h2 { font-family: 'Impact', sans-serif; font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 20px; text-transform: uppercase; }
+  h3 { color: var(--accent-yellow); margin-bottom: 10px; font-size: 1.3rem; }
+  .card { background: var(--bg-card); border: 1px solid rgba(255,0,85,0.3); border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+  
+  .coff-rule-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .coff-rule-table th, .coff-rule-table td { padding: 10px; border: 1px solid var(--border-color); text-align: left; }
+  .coff-rule-table th { color: var(--accent-cyan); }
+  .coff-tag { font-family: monospace; color: var(--accent-pink); font-weight: bold; }
 
-<body>
-  <header>
-    <div class="logo">COFF <span>HUB</span></div>
-    <nav>
-      <button class="nav-btn active" onclick="switchView('articles', event)">Articles</button>
-      <button class="nav-btn" onclick="switchView('results', event)">Résultats & PWA</button>
-      <button class="nav-btn" onclick="switchView('editor', event)">Éditeur COFF</button>
-      <button class="nav-btn" onclick="switchView('forum', event)">Forum & FAQ</button>
-    </nav>
-  </header>
+  /* Interface Hub Co */
+  .hubco-box { max-width: 400px; margin: 40px auto; text-align: center; }
+  .coff-input { width: 100%; background: #0a0d18; border: 1px solid var(--accent-cyan); color: #fff; padding: 12px; margin-bottom: 15px; border-radius: 6px; font-family: monospace; font-size: 1rem; }
+  .coff-input:focus { outline: none; border-color: var(--accent-pink); box-shadow: 0 0 10px rgba(255,0,85,0.3); }
+  .coff-submit { width: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink)); border: none; color: #fff; font-weight: bold; font-size: 1.1rem; padding: 12px; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+<script>
 
-  <main>
-    <section id="articles" class="view-section active">
-      <h2>Manifeste & Documentation</h2>
-      <div class="article-grid">
-        <div class="card">
-          <h3>Le Miroir Absolu (LIFO Séquentiel)</h3>
-          <span class="tag">Architecture</span><span class="tag">V4</span>
-          <p>Découvrez comment l'ouverture séquentielle des balises globales (HTML) combinée aux blocs mémoires COFF et aux fermetures en miroir inversé redéfinit le parsing.</p>
+
+<!-- ================= 2. MÉTA, VALEURS, ATTRIBUTS & PARAM (Le Noyau de Singularité) ================= -->
+<Value>
+<co id="CoffHubEngine" type="PlatformCore">
+<co property="UINavigation" state="active">
+<co property="ForumDatabase" state="standby">
+<co id="HubCo" type="ConnectionProtocol">
+
+<!-- Routages Tertiaires COFF (Dictionnaire Alphanumérique Appliqué) -->
+<coA1> NavClick ➡️ ViewSwitch 🔄 </coA1>
+<coB2> PostButton ➡️➡️ DataThread 📩 </coB2>
+<coC3> CompilerCheck ↕️ ValidateMirror 💎 </coC3>
+<coD4> HubCoSubmit ➡️➡️ ConnectHubCo 🔗 </coD4>
+
+<!-- Interface Graphique (UI Injectée au centre du noyau) -->
+<header>
+  <div class="logo">COFF <span>HUB</span></div>
+  <nav>
+    <button class="nav-btn active" onclick="switchView('articles', event)">Manifeste & Règles</button>
+    <button class="nav-btn" onclick="switchView('results', event)">Démo PWA</button>
+    <button class="nav-btn" onclick="switchView('editor', event)">Éditeur Absolu</button>
+    <button class="nav-btn" onclick="switchView('forum', event)">Forum</button>
+    <button class="nav-btn" style="border-color: var(--accent-yellow); color: var(--accent-yellow);" onclick="switchView('hubco-view', event)">🔗 Hub Co</button>
+  </nav>
+</header>
+
+<main>
+  <!-- VUE 1: ARTICLES & RÈGLES -->
+  <section id="articles" class="view-section active">
+    <h2>Le Manifeste COFF</h2>
+    
+    <div class="card">
+      <h3>1. Architecture en 5 Couches (Le Miroir Absolu)</h3>
+      <p>Le document abandonne le DOM classique pour un entonnoir parfait : <span class="coff-tag">html > meta > body > style > script</span>. Le cœur du système est encapsulé au point de compression maximal, avant l'inversion symétrique absolue où chaque balise se referme, même les métadonnées.</p>
+    </div>
+
+    <div class="card">
+      <h3>2. Nomenclature Alphanumérique des Connecteurs</h3>
+      <p style="margin-bottom: 15px;">Les balises tertiaires définissent le code génétique d'exécution spatio-temporel du COFF.</p>
+      
+      <div class="grid-2">
+        <div>
+          <h4 style="color:var(--accent-pink);">Lettres (Origine de la Valeur)</h4>
+          <table class="coff-rule-table">
+            <tr><th>A</th><td>Action Physique (Clic, Touch)</td></tr>
+            <tr><th>B</th><td>Bridge (Pont Interne Système)</td></tr>
+            <tr><th>C</th><td>Continuité (Flux Bidirectionnel)</td></tr>
+            <tr><th>D</th><td>Data Hub (Protocoles Sécurisés)</td></tr>
+            <tr><th>E</th><td>Environnement (État de la PWA)</td></tr>
+          </table>
         </div>
-        <div class="card">
-          <h3>Connexions & Émojis Spatio-Temporels</h3>
-          <span class="tag">Syntaxe</span><span class="tag">Routage</span>
-          <p>Utiliser les flèches directionnelles (➡️, ↕️, ⏩) pour transformer un événement utilisateur en un pipeline de données fluide.</p>
+        <div>
+          <h4 style="color:var(--accent-cyan);">Chiffres (Attribut Temporel)</h4>
+          <table class="coff-rule-table">
+            <tr><th>0</th><td>Neutre / En attente</td></tr>
+            <tr><th>1</th><td>Immédiat (One-shot ⚡)</td></tr>
+            <tr><th>2</th><td>Profond (Pénétrant ➡️➡️)</td></tr>
+            <tr><th>3</th><td>Rétroactif (Boucle ↕️/🔄)</td></tr>
+            <tr><th>4</th><td>Chiffré / Sécurisé (🔗)</td></tr>
+            <tr><th>5</th><td>Surcharge / Boost (⏩/☢️)</td></tr>
+          </table>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="results" class="view-section">
-      <h2>Démonstration Live PWA</h2>
-      <div class="showcase-container">
-        <div class="interactive-frame">
-          <div class="banner-demo" onclick="alert('⚡ Signal COFF transmis depuis l\'interface !')">
-            <span>DÉCLENCHER COFF</span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- VUE 2: HUB CO -->
+  <section id="hubco-view" class="view-section">
+    <div class="card hubco-box">
+      <h2 style="color: var(--accent-yellow);">HUB CO</h2>
+      <p style="color: var(--text-muted); margin-bottom: 20px;">Accès unifié au réseau COFF.</p>
+      <input type="text" class="coff-input" placeholder="Tag COFF (ex: Samintox)">
+      <input type="password" class="coff-input" placeholder="Clé de Routage D4">
+      <button class="coff-submit" onclick="alert('🔗 Routage <coD4> : Requête chiffrée envoyée au Hub Co.')">Ouvrir Hub Co ➡️</button>
+    </div>
+  </section>
 
-    <section id="editor" class="view-section">
-      <h2>Éditeur & Transpileur</h2>
-      <div class="editor-layout">
-        <div class="editor-pane">
-          <label>Structure Brute COFF</label>
-          <textarea>&lt;Value&gt;
-&lt;co id="System"&gt;
-  &lt;coA1&gt; UserClick ➡️ ActionTrigger ⚡ &lt;/coA1&gt;
+  <!-- VUE 3: RÉSULTATS PWA -->
+  <section id="results" class="view-section">
+    <h2>Démonstration PWA</h2>
+    <div class="card" style="text-align: center; padding: 50px;">
+      <button style="background:var(--accent-pink); padding: 15px 30px; border:none; color:#fff; font-weight:bold; cursor:pointer;" onclick="alert('⚡ <coA1> : Déclencheur physique immédiat validé !')">TESTER LE ROUTAGE A1</button>
+    </div>
+  </section>
+
+  <!-- VUE 4: ÉDITEUR -->
+  <section id="editor" class="view-section">
+    <h2>Bac à Sable</h2>
+    <div class="card">
+      <p style="color:var(--accent-cyan);">Transpileur en attente des commandes LIFO...</p>
+      <textarea style="width: 100%; height: 150px; background: #0a0d18; color: #fff; border: 1px solid var(--accent-pink); margin-top: 15px; padding: 10px; font-family: monospace;">&lt;Value&gt;
+&lt;co id="TestEngine"&gt;
+  &lt;coB5&gt; SpamClick ⏩ ➡️➡️ Overload ☢️ &lt;/coB5&gt;
 &lt;/co&gt;
 &lt;/Value&gt;</textarea>
-          <button class="compile-btn" onclick="alert('Miroir COFF validé !')">Vérifier le Miroir</button>
-        </div>
-        <div class="editor-pane">
-          <label>Console de Sortie</label>
-          <textarea readonly style="color: var(--accent-cyan); background: #03050a;">[COFF Core] Analyse de la symétrie...
-[OK] Balises environnement détectées.
-Prêt pour déploiement GitHub Pages.</textarea>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="forum" class="view-section">
-      <div class="forum-header">
-        <h2>Forum de la Communauté</h2>
-        <button class="new-post-btn" onclick="alert('Module de création ouvert')">+ Nouveau Sujet</button>
-      </div>
-      <div class="thread-list">
-        <div class="thread-card">
-          <div class="thread-info">
-            <h4>[Résolu] Tolérance du parseur sur les balises de fermeture</h4>
-            <p>Le navigateur tolère le miroir strict et reconstruit l'arbre silencieusement.</p>
-          </div>
-          <div class="thread-stats"><span>14 réponses</span></div>
-        </div>
-      </div>
-    </section>
-  </main>
+  <!-- VUE 5: FORUM -->
+  <section id="forum" class="view-section">
+    <h2>Forum Communautaire</h2>
+    <div class="card">
+      <h4 style="color:var(--text-main);">Implémentation du Dictionnaire Alphanumérique</h4>
+      <p style="color:var(--text-muted);">Discussion ouverte : Faut-il ajouter un attribut "6" pour les bases de données externes ?</p>
+    </div>
+  </section>
+</main>
 
-  <script>
-    
-    <!-- ================= 2. LES VALEURS (Mémoire COFF) ================= -->
-    <Value>
-    <co id="CoffHubEngine" type="PlatformCore">
-    <co property="UINavigation" state="active">
-    <co property="ForumDatabase" state="standby">
+<!-- Logique d'exécution (JavaScript Injecté) -->
+function switchView(viewId, event) {
+  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
 
-    <!-- Routages Tertiaires -->
-    <coA1> NavClick ➡️ ViewSwitch 🔄 </coA1>
-    <coB2> PostButton ➡️➡️ DataThread 📩 </coB2>
+<!-- Fermetures Tertiaires & Secondaires (COFF) -->
+</co>
+</co>
+</co>
+</co>
+</Value>
 
-    <!-- ================= MOTEUR JS (Logique d'exécution) ================= -->
-    <script>
-      function switchView(viewId, event) {
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        event.currentTarget.classList.add('active');
-      }
 
-    <!-- ================= 3. LES BALISES CLOSES EN MIROIR EXACT ================= -->
-    <!-- Fermetures COFF -->
-    </co>
-    </co>
-    </co>
-    </Value>
-    
-  </script>
-
-<!-- Fermetures HTML -->
-</body>
+<!-- ================= 3. FERMETURES PRINCIPALES (Le Miroir Absolu) ================= -->
+</script>
 </style>
-</title>
+</body>
 </meta>
 </meta>
-</head>
 </html>
 
