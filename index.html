@@ -3,105 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hello World - Coff V4 Miroir Absolu & Rétro Gaming</title>
+<title>Hello World - Coff V4 avec Boosts</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
 #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
-.container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; pointer-events: none; }
-h1 { font-size: 6rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055; letter-spacing: 5px; animation: glitch 1.5s infinite; }
+.container { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; pointer-events: none; }
+h1 { font-size: 6rem; text-transform: uppercase; color: #ff0055; text-shadow: 0 0 20px #ff0055, 0 0 40px #00ffff, 0 0 60px #ff0055; letter-spacing: 5px; animation: glitch 1.5s infinite; transition: all 0.2s ease; }
+
+/* Bannière d'activation */
+#trigger-banner {
+  width: 400px;
+  height: 80px;
+  background: linear-gradient(to bottom, #000000 33%, #ffcc00 33%, #ffcc00 66%, #000000 66%);
+  border: 4px solid #fff;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.05s ease, box-shadow 0.1s ease;
+}
+#trigger-banner:active { transform: scale(0.92); box-shadow: 0 0 40px rgba(255, 0, 85, 0.9); }
+#trigger-banner span {
+  color: #fff;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 5px 15px;
+  text-shadow: 2px 2px 0px #ff0055;
+}
+
 #consent-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; pointer-events: auto; }
 .modal-card { background: #101424; border: 2px solid #ff0055; padding: 30px; border-radius: 12px; max-width: 450px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); display: flex; flex-direction: column; gap: 15px; }
 .modal-card h2 { color: #00e5ff; font-size: 1.5rem; text-transform: uppercase; }
 .modal-card p { color: #aaa; font-family: sans-serif; font-size: 0.9rem; line-height: 1.4; }
 .btn-accept { background: linear-gradient(90deg, #ff0055, #00e5ff); border: none; color: #fff; padding: 12px 24px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 229, 255, 0.6); }
+
 @keyframes glitch { 0% { text-shadow: 3px 3px 0px #00ffff, -3px -3px 0px #ff0055; } 50% { text-shadow: -3px 3px 0px #00ffff, 3px -3px 0px #ff0055; } 100% { text-shadow: 3px -3px 0px #00ffff, -3px -3px 0px #ff0055; } }
+.overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #ffcc00, 0 0 90px #ff0055 !important; animation: glitch 0.1s infinite !important; }
 </style>
 </head>
 <body>
 <div id="consent-modal">
 <div class="modal-card">
-<h2>⚠️ Autorisation Requise</h2>
-<p>Cette application interactive utilise des <b>cookies</b>, un <b>synthétiseur audio rétro</b> et un <b>moteur de feux d'artifice</b>.</p>
-<button class="btn-accept" onclick="acceptConsent()">🚀 Autoriser & Activer</button>
+<h2>⚠️ Initialisation requise</h2>
+<button class="btn-accept" onclick="acceptConsent()">🚀 Activer les systèmes</button>
 </div>
 </div>
+
 <canvas id="canvas-bg"></canvas>
 <div class="container">
 <h1 id="title">HELLO WORLD 🚀</h1>
+<div id="trigger-banner">
+  <span>DÉCLENCHER</span>
 </div>
-<script>
+</div>
+
+<!-- ================= ARCHITECTURE COFF V4 (Miroir + Boosts) ================= -->
+<template id="coff-logic">
 <Value>
 <co id: "CoffSystemRoot" type: "AppModule">
-<co property: "AudioEngine" param: "ChiptuneSquare" value: "active">
-<co property: "VisualEngine" plugin: "ParticleExplosion" symbol: "🎆">
+  
+  <!-- Moteurs Principaux -->
+  <co property: "AudioEngine" param: "ChiptuneSquare" state: "standby">
+  <co property: "VisualEngine" plugin: "ParticleExplosion" symbol: "🎆">
 
-<!-- === BIBLIOTHÈQUE DE CONNEXIONS COFF & ÉMOTICÔNES FLÉCHÉES === -->
-<coA1> AudioMaster ↔️ CanvasRenderer 🎵 </coA1>
-<coB2> TriggerBeat ➡️ ExplosionLauncher 🎇 </coB2>
-<coC3> BassFrequency ↕️ ScaleAmplitude 📈 </coC3>
-<coD4> UserInput ⬅️ PointerEvent 👆 </coD4>
+  <!-- SOUS-ROUTINE : Module de Boost Imbriqué -->
+  <co id: "BoostEngine" type: "CoreMultiplier">
+    <co param: "VisualOverload" factor: "x3" symbol: "⏫">
+    <co param: "AudioDistortion" factor: "Max" symbol: "🔊">
+  </co> <!-- Fin de déclaration des paramètres de Boost -->
 
-<!-- ================= CŒUR LOGIQUE (JavaScript Unifié & Exécutable) ================= -->
+  <!-- === BIBLIOTHÈQUE DE CONNEXIONS & FLÈCHES LOGIQUES === -->
+  <!-- 1. Connexion Standard -->
+  <coA1> BannerClick ➡️ ActionTrigger ⚡ </coA1>
+  
+  <!-- 2. Déploiement Séquentiel (Le signal voyage vers deux cibles) -->
+  <coB2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </coB2>
+  
+  <!-- 3. Rétroaction Bidirectionnelle : L'intensité visuelle suit l'intensité audio -->
+  <coC3> BassAmplitude ↕️ ParticleVelocity 📈 </coC3>
+  
+  <!-- 4. CONDITION DE BOOST (Vitesse de frappe = Surcharge) -->
+  <coD4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </coD4>
+  
+  <!-- 5. Boucle d'activation du Boost -->
+  <coE5> BoostEngine:Active 🔄 ➡️ OverloadState ⏫ 💥 </coE5>
+
+<!-- ================= MIROIR ABSOLU : FERMETURE SYMÉTRIQUE ================= -->
+  </co> <!-- Fin BoostEngine -->
+  </co> <!-- Fin VisualEngine -->
+  </co> <!-- Fin AudioEngine -->
+</co> <!-- Fin CoffSystemRoot -->
+</Value>
+</template>
+
 <script>
 const canvas = document.getElementById('canvas-bg');
 const ctx = canvas.getContext('2d');
+const banner = document.getElementById('trigger-banner');
+const title = document.getElementById('title');
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize);
 resize();
 
 let particles = [];
-let audioCtx, isRunning = false;
-
-function setCookie(name, value, days) {
-  let expires = "";
-  if (days) {
-    let date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
-function getCookie(name) {
-  let nameEQ = name + "=";
-  let ca = document.cookie.split(';');
-  for(let i=0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1,c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-  }
-  return null;
-}
-
-window.addEventListener('load', () => {
-  if (getCookie("coff_consent") === "granted") {
-    document.getElementById('consent-modal').style.display = 'none';
-    startEngine();
-  }
-});
+let audioCtx;
+let clickCombo = 0;
+let comboTimer;
 
 function acceptConsent() {
-  setCookie("coff_consent", "granted", 30);
   document.getElementById('consent-modal').style.display = 'none';
-  startEngine();
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
 
 class Particle {
-  constructor(x, y, color) {
+  constructor(x, y, color, isBoosted) {
     this.x = x; this.y = y;
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 18 + 6;
+    // Boost de vélocité si le combo est actif (coC3 & coE5)
+    const speed = isBoosted ? Math.random() * 40 + 10 : Math.random() * 20 + 5;
     this.vx = Math.cos(angle) * speed;
     this.vy = Math.sin(angle) * speed;
-    this.size = Math.random() * 10 + 4;
+    this.size = isBoosted ? Math.random() * 20 + 8 : Math.random() * 12 + 4;
     this.color = color;
     this.alpha = 1;
-    this.decay = Math.random() * 0.02 + 0.01;
+    this.decay = isBoosted ? Math.random() * 0.04 + 0.02 : Math.random() * 0.02 + 0.01;
   }
   update() {
     this.x += this.vx; this.y += this.vy;
@@ -119,60 +149,65 @@ class Particle {
   }
 }
 
-function triggerExplosion(x, y) {
-  const colors = ['#ff0055', '#00e5ff', '#ffaa00', '#ffffff'];
-  for (let i = 0; i < 140; i++) {
-    particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+function triggerExplosion(x, y, isBoosted) {
+  const colors = isBoosted ? ['#ffffff', '#ffcc00', '#ff0000', '#00ffcc'] : ['#ff0055', '#00e5ff', '#ffcc00'];
+  const count = isBoosted ? 400 : 150; // Boost visuel (co: VisualOverload x3)
+  for (let i = 0; i < count; i++) {
+    particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], isBoosted));
   }
 }
 
-function playChiptuneNote(freq) {
+function playSound(freq, duration, type = 'square') {
   if (!audioCtx) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.type = 'square';
+  osc.type = type;
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   osc.start();
-  osc.stop(audioCtx.currentTime + 0.15);
+  osc.stop(audioCtx.currentTime + duration);
 }
 
-function startEngine() {
-  if (isRunning) return;
-  isRunning = true;
+// LOGIQUE DU "BOOSTS FLÈCHES" (coD4: UserSpamClick ⏩ ➡️➡️ BoostEngine)
+banner.addEventListener('pointerdown', (e) => {
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  
+  clickCombo++;
+  clearTimeout(comboTimer);
+  
+  const rect = banner.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
 
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+  // Activation du BoostEngine si Spam Click (> 3 clics rapides)
+  if (clickCombo >= 4) {
+    title.classList.add('overload-text'); // Effet visuel H1
+    triggerExplosion(centerX, centerY, true); // Particules Boostées (x3)
+    
+    // Audio Distordu (co: AudioDistortion Max)
+    playSound(110, 0.4, 'sawtooth');
+    playSound(880, 0.2, 'square');
+    
+  } else {
+    // Action Standard (coB2)
+    triggerExplosion(centerX, centerY, false);
+    playSound(165, 0.1);
+    setTimeout(() => playSound(330, 0.1), 80);
   }
 
-  let step = 0;
-  setInterval(() => {
-    playChiptuneNote(step % 8 === 0 ? 110 : (step % 4 === 0 ? 220 : 165));
-    if (step % 8 === 0) {
-      triggerExplosion(window.innerWidth / 2, window.innerHeight / 2);
-    }
-    step++;
-  }, 140);
-}
-
-canvas.addEventListener('pointerdown', (e) => {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  triggerExplosion(e.clientX, e.clientY);
-  playChiptuneNote(330 + Math.random() * 200);
+  // Réinitialisation du Combo (Fin de la boucle de surcharge)
+  comboTimer = setTimeout(() => {
+    clickCombo = 0;
+    title.classList.remove('overload-text');
+  }, 400); 
 });
 
 function animate() {
   requestAnimationFrame(animate);
-  ctx.fillStyle = 'rgba(5, 5, 10, 0.3)';
+  ctx.fillStyle = 'rgba(5, 5, 10, 0.3)'; // Traînée des particules
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let i = particles.length - 1; i >= 0; i--) {
@@ -183,19 +218,7 @@ function animate() {
 }
 animate();
 </script>
-
-<!-- ================= MIROIR B : Balises fermantes inversées en symétrie exacte ================= -->
-</co>
-</co>
-</co>
-</Value>
-</script>
-</style>
-</head>
-<body>
-</div>
-</div>
-</canvas>
-</div>
+</body>
 </html>
+
 
