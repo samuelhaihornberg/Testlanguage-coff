@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <meta charset="UTF-8">
@@ -8,15 +9,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
   body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
   canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
-<header id="coff-header">
-<main id="coff-main">
-<sections id="coff-sections">
-<articles id="coff-articles">
+<header>
+<main>
+<sections>
+<articles>
 
-<!-- ================= 2. VALEURS & CONTENEURS (Fusionnés avant les div) ================= -->
+<!-- ================= 2. VALEURS & CONTENEURS (Purifiés) ================= -->
 <Value>
-<co id="SpaEngine">
-<co id="PhysicsEngine">
+<co>
+<co>
 
   <!-- Routages Tertiaires COFF -->
   <a1> TabClick ➡️ ViewSwitch ⚡ </a1>
@@ -25,7 +26,7 @@
   <d4> BannerClick ➡️➡️ AudioVisualPulse ☢️ </d4>
   <co🔃> RenderEngine ↕️ ParticleCanvas 🎆 </co🔃>
 
-<div id="coff-hub-ui">
+<div>
 <script>
   /* === RÉFRACTION : MOTEUR D'INTERFACE ET DE LOGIQUE === */
   document.addEventListener("DOMContentLoaded", () => {
@@ -35,8 +36,8 @@
     canvas.id = 'canvas-bg';
     document.body.appendChild(canvas);
 
-    // 2. Injection de la SPA dans le <div> protecteur
-    const uiContainer = document.getElementById('coff-hub-ui');
+    // 2. Injection de la SPA dans la couche <div> pure
+    const uiContainer = document.querySelector('div'); // Cible directement la couche de protection
     uiContainer.style.cssText = 'position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh;';
     
     uiContainer.innerHTML = `
@@ -58,8 +59,8 @@
         <div id="view-articles" class="view-section" style="display:block;">
           <h2 style="color:var(--accent-cyan); font-family:'Impact'; font-size:2.5rem; margin-bottom:20px;">Manifeste & Architecture</h2>
           <div style="background:#171b30; border:1px solid rgba(255,0,85,0.3); padding:20px; border-radius:8px; margin-bottom:20px;">
-            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Réfractif Corrigé</h3>
-            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">L'entonnoir est désormais mathématiquement pur. Les balises de mémorisation &lt;Value&gt; et &lt;co&gt; encapsulent proprement l'UI et la logique spatio-temporelle, juste avant le point de réfraction central.</p>
+            <h3 style="color:var(--accent-yellow);">Le Miroir Absolu Pur</h3>
+            <p style="margin-top:10px; line-height:1.5; color:var(--text-muted);">L'entonnoir est purgé de tout identifiant superflu. Les balises d'ouverture sont des dimensions vierges. Le script, situé dans l'ultime <code>&lt;div&gt;</code>, irradie vers l'extérieur.</p>
           </div>
         </div>
 
@@ -72,7 +73,7 @@
         <!-- VUE: ÉDITEUR -->
         <div id="view-editor" class="view-section" style="display:none;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Matrice Intacte&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
+            <textarea id="coff-input" style="height:400px; background:#0a0d18; color:#fff; border:1px solid var(--accent-cyan); padding:15px; font-family:monospace; resize:none;">&lt;Value&gt;\n  &lt;a1&gt; Action ➡️ Result &lt;/a1&gt;\n  &lt;h1 style="color:#00e5ff;"&gt;Matrice Sans ID&lt;/h1&gt;\n&lt;/Value&gt;</textarea>
             <div id="coff-preview" style="background:#fff; color:#000; padding:15px; overflow:auto;"></div>
           </div>
         </div>
@@ -80,8 +81,8 @@
         <!-- VUE: FORUM -->
         <div id="view-forum" class="view-section" style="display:none;">
           <div style="background:rgba(0, 229, 255, 0.05); border-left:4px solid var(--accent-cyan); padding:15px; margin-bottom:15px;">
-            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Quelle est la place exacte de &lt;Value&gt; ?</h4>
-            <p style="color:var(--text-muted);">R: Elle encadre les &lt;co&gt; et se place en avant-dernière position, juste avant l'injection des &lt;div&gt; et de la logique pure &lt;script&gt;. Cela crée un sas de sécurité étanche.</p>
+            <h4 style="color:var(--accent-yellow); font-size:1.2rem; margin-bottom:5px;">Q: Comment le script cible-t-il l'UI sans ID ?</h4>
+            <p style="color:var(--text-muted);">R: Grâce à l'architecture géométrique. Il n'y a qu'un seul <code>&lt;div&gt;</code> structurel avant le script. Le JavaScript cible simplement cette dimension par sa nature intrinsèque, prouvant l'inutilité des ID sur l'enveloppe LIFO.</p>
           </div>
         </div>
 
