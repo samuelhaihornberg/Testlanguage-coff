@@ -20,6 +20,18 @@
   .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
 </style>
 <body>
+
+<Value>
+<co id="CoffSystemRoot" type="AppModule">
+<co property="AudioEngine" state="standby">
+<co property="VisualEngine" symbol="🎆">
+<co id="BoostEngine" type="CoreMultiplier">
+
+<a1> BannerClick ➡️ ActionTrigger ⚡ </a1>
+<b2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </b2>
+<c3> BassAmplitude ↕️ ParticleVelocity 📈 </c3>
+<d4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </d4>
+
 <div id="consent-modal">
   <div class="modal-card">
     <h2>⚠️ Système COFF en attente</h2>
@@ -30,40 +42,48 @@
 <div class="container">
   <h1 id="title">HELLO WORLD 🚀</h1>
   <div id="trigger-banner"><span>DÉCLENCHER</span></div>
-</div>
+
 <script>
-
-<!-- ================= 2. LES VALEURS (Entrées COFF & Routages) ================= -->
-<Value>
-<co id="CoffSystemRoot" type="AppModule">
-<co property="AudioEngine" state="standby">
-<co property="VisualEngine" symbol="🎆">
-<co id="BoostEngine" type="CoreMultiplier">
-
-<coA1> BannerClick ➡️ ActionTrigger ⚡ </coA1>
-<coB2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </coB2>
-<coC3> BassAmplitude ↕️ ParticleVelocity 📈 </coC3>
-<coD4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </coD4>
-
-<!-- ================= MOTEUR JS ================= -->
-<script>
-  const canvas = document.getElementById('canvas-bg'), ctx = canvas.getContext('2d'), banner = document.getElementById('trigger-banner'), title = document.getElementById('title');
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  const banner = document.getElementById('trigger-banner');
+  const title = document.getElementById('title');
   let particles = [], audioCtx, clickCombo = 0, comboTimer;
 
-  function acceptConsent() { document.getElementById('consent-modal').style.display = 'none'; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); 
+  resize();
+
+  function acceptConsent() { 
+    document.getElementById('consent-modal').style.display = 'none'; 
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+  }
 
   class Particle {
     constructor(x, y, color, isBoosted) {
-      this.x = x; this.y = y; const angle = Math.random() * Math.PI * 2;
+      this.x = x; this.y = y; 
+      const angle = Math.random() * Math.PI * 2;
       const speed = isBoosted ? Math.random() * 40 + 10 : Math.random() * 20 + 5;
-      this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+      this.vx = Math.cos(angle) * speed; 
+      this.vy = Math.sin(angle) * speed;
       this.size = isBoosted ? Math.random() * 20 + 8 : Math.random() * 12 + 4;
-      this.color = color; this.alpha = 1; this.decay = isBoosted ? Math.random() * 0.04 + 0.02 : Math.random() * 0.02 + 0.01;
+      this.color = color; this.alpha = 1; 
+      this.decay = isBoosted ? Math.random() * 0.04 + 0.02 : Math.random() * 0.02 + 0.01;
     }
-    update() { this.x += this.vx; this.y += this.vy; this.vx *= 0.92; this.vy *= 0.92; this.alpha -= this.decay; }
-    draw() { ctx.save(); ctx.globalAlpha = Math.max(this.alpha, 0); ctx.fillStyle = this.color; ctx.shadowBlur = 20; ctx.shadowColor = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); ctx.restore(); }
+    update() { 
+      this.x += this.vx; this.y += this.vy; 
+      this.vx *= 0.92; this.vy *= 0.92; 
+      this.alpha -= this.decay; 
+    }
+    draw() { 
+      ctx.save(); 
+      ctx.globalAlpha = Math.max(this.alpha, 0); 
+      ctx.fillStyle = this.color; 
+      ctx.shadowBlur = 20; 
+      ctx.shadowColor = this.color; 
+      ctx.fillRect(this.x, this.y, this.size, this.size); 
+      ctx.restore(); 
+    }
   }
 
   function triggerExplosion(x, y, isBoosted) {
@@ -75,46 +95,53 @@
   function playSound(freq, duration, type = 'square') {
     if (!audioCtx) return;
     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+    osc.type = type; 
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime); 
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination); 
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
   }
 
   banner.addEventListener('pointerdown', () => {
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     clickCombo++; clearTimeout(comboTimer);
-    const rect = banner.getBoundingClientRect(), centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
+    const rect = banner.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
     if (clickCombo >= 4) {
-      title.classList.add('overload-text'); triggerExplosion(centerX, centerY, true);
-      playSound(110, 0.4, 'sawtooth'); playSound(880, 0.2, 'square');
+      title.classList.add('overload-text'); 
+      triggerExplosion(centerX, centerY, true);
+      playSound(110, 0.4, 'sawtooth'); 
+      playSound(880, 0.2, 'square');
     } else {
       triggerExplosion(centerX, centerY, false);
-      playSound(165, 0.1); setTimeout(() => playSound(330, 0.1), 80);
+      playSound(165, 0.1); 
+      setTimeout(() => playSound(330, 0.1), 80);
     }
     comboTimer = setTimeout(() => { clickCombo = 0; title.classList.remove('overload-text'); }, 400); 
   });
 
   function animate() {
-    requestAnimationFrame(animate); ctx.fillStyle = 'rgba(5, 5, 10, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (let i = particles.length - 1; i >= 0; i--) { particles[i].update(); particles[i].draw(); if (particles[i].alpha <= 0) particles.splice(i, 1); }
+    requestAnimationFrame(animate); 
+    ctx.fillStyle = 'rgba(5, 5, 10, 0.3)'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) { 
+      particles[i].update(); 
+      particles[i].draw(); 
+      if (particles[i].alpha <= 0) particles.splice(i, 1); 
+    }
   }
   animate();
 </script>
 
-<!-- ================= 3. LES BALISES CLOSES EN MIROIR EXACT ================= -->
-<!-- Fermetures COFF -->
 </co>
 </co>
 </co>
 </co>
 </Value>
-</script>
 
-<!-- Fermetures HTML -->
-</div>
-</div>
-</div>
 </body>
 </style>
 </title>
