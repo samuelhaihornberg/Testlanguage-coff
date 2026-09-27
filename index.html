@@ -5,22 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>COFF Hub - Architecture Absolue</title>
 <style>
-  /* Masquage des fermetures théoriques pour éviter les fuites visuelles */
-  meta, title, head, Value, co { display: none !important; }
+  /* Verrouillage d'affichage pour les balises pures COFF */
+  Value, co { display: none !important; }
 
   /* Variables Thème par défaut (Steam x JVC x Fluo) */
   :root { 
-    --bg-main: #171a21; /* Steam Dark */
-    --bg-panel: #1b2838; /* Steam Panel */
-    --bg-card: #2a475e; /* Steam Blue */
+    --bg-main: #171a21; 
+    --bg-panel: #1b2838; 
+    --bg-card: #2a475e; 
     --text-main: #c7d5e0; 
     --text-muted: #8f98a0;
-    --fluo-green: #39ff14; /* Cyberpunk Matrix */
-    --jvc-orange: #ff6600; /* JVC Engagement */
+    --fluo-green: #39ff14; 
+    --jvc-orange: #ff6600; 
     --border-glow: rgba(57, 255, 20, 0.4);
   }
 
-  /* Theme : Light (Clair / Clean) */
   body.theme-light {
     --bg-main: #f0f3f6; --bg-panel: #ffffff; --bg-card: #e1e8f0;
     --text-main: #171a21; --text-muted: #4a5568;
@@ -28,7 +27,6 @@
     --border-glow: rgba(0, 136, 0, 0.2);
   }
 
-  /* Theme : Retro (Scanlines CRT) */
   body.theme-retro::after {
     content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
@@ -38,7 +36,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; touch-action: manipulation; }
   body { background: var(--bg-main); color: var(--text-main); overflow-x: hidden; min-height: 100vh; transition: background 0.3s; }
   
-  /* Topbar Hub */
   .nav-bar { background: var(--bg-panel); border-bottom: 2px solid var(--fluo-green); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px var(--border-glow); }
   .logo { font-family: 'Impact', sans-serif; font-size: 2.2rem; color: var(--text-main); letter-spacing: 2px; }
   .logo span { color: var(--fluo-green); text-shadow: 0 0 10px var(--fluo-green); }
@@ -56,7 +53,6 @@
   .view.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Sections JVC x Steam avec Feedback */
   .content-section { background: var(--bg-panel); border-left: 4px solid var(--jvc-orange); padding: 25px; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); margin-bottom: 30px; position: relative; }
   .content-title { color: var(--fluo-green); font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; font-family: 'Impact', sans-serif; letter-spacing: 1px; }
   
@@ -66,7 +62,6 @@
   .btn-like.active { color: var(--fluo-green); text-shadow: 0 0 8px var(--fluo-green); }
   .btn-dislike.active { color: var(--jvc-orange); text-shadow: 0 0 8px var(--jvc-orange); }
 
-  /* Éditeur SPA */
   .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 75vh; }
   .editor-panel { display: flex; flex-direction: column; border: 1px solid var(--bg-card); border-radius: 8px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.6); }
   .editor-header { background: var(--bg-card); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--fluo-green); }
@@ -80,35 +75,35 @@
   .btn-toggle { background: transparent; border: 1px solid var(--jvc-orange); color: var(--jvc-orange); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
   .btn-toggle:hover { background: var(--jvc-orange); color: #fff; }
 </style>
+</head>
 <body>
 
+<!-- ENTONNOIR D'ACTION LIFO -->
 <Value>
 <co id="HubRoot" type="AppModule">
 
-<!-- Point d'ancrage absolu -->
 <div id="app-mount"></div>
 
 <script>
-  // --- MATRICE LINGUISTIQUE ---
   const langDict = {
     "standard": {
       nav1: "Accueil & Flux", nav2: "Éditeur & Réfraction",
-      title1: "Réseau COFF Absolu", desc1: "Architecture LIFO stricte. Les balises s'imbriquent et se ferment dans un ordre mathématique parfait.",
+      title1: "Réseau COFF Absolu", desc1: "Architecture LIFO via Miroir Scindé. Les entonnoirs garantissent l'exécution motrice parfaite.",
       title2: "Cellule Motrice", btnRun: "🚀 Compiler le Code", toggleCom: "Afficher/Masquer Commentaires"
     },
     "geek": {
       nav1: "Lobby / Feed", nav2: "Crafting / Preview",
-      title1: "Serveur Hub COFF", desc1: "GG WP. L'entonnoir LIFO est god-tier. Zéro crash de parseur, full optimisation.",
+      title1: "Serveur Hub COFF", desc1: "GG WP. Le Double LIFO est god-tier. Zéro crash de parseur, full optimisation HTML/CSS/JS.",
       title2: "Matrice de Rendu", btnRun: "⚡ Exec Script.exe", toggleCom: "Toggle // Docs"
     },
     "jeunesse": {
       nav1: "Le QG", nav2: "Le Labo",
-      title1: "Le Réseau V4", desc1: "Wesh l'équipe. Le LIFO c'est le sang, l'architecture est masterclass, ça bug jamais.",
+      title1: "Le Réseau V4", desc1: "Wesh l'équipe. L'entonnoir scindé c'est le sang, l'architecture passe crème dans le navigateur.",
       title2: "Miroir Visuel", btnRun: "🔥 Lancer la D", toggleCom: "ON/OFF Blabla"
     }
   };
 
-  // --- SOURCE COFF EXACTE (Strict LIFO) ---
+  // Le Code Source Intégré avec le Double Entonnoir pour que l'Iframe fonctionne aussi
   const codeWithComments = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -130,6 +125,7 @@
   @keyframes glitch { 0% { text-shadow: 3px 3px 0 #0ff, -3px -3px 0 #f05; } 50% { text-shadow: -3px 3px 0 #0ff, 3px -3px 0 #f05; } 100% { text-shadow: 3px -3px 0 #0ff, -3px -3px 0 #f05; } }
   .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
 <\\/style>
+<\\/head>
 <body>
 
 <Value>
@@ -249,7 +245,7 @@
   animate();
 <\\/script>
 
-<!-- Fermeture Absolue Stricte -->
+<!-- Fermeture LIFO Action Absolue -->
 <\\/co>
 <\\/co>
 <\\/co>
@@ -257,17 +253,11 @@
 <\\/Value>
 
 <\\/body>
-<\\/style>
-<\\/title>
-<\\/meta>
-<\\/meta>
-<\\/head>
 <\\/html>`;
 
   document.addEventListener("DOMContentLoaded", () => {
     const appMount = document.getElementById('app-mount');
     
-    // --- INJECTION DOM SPA ---
     appMount.innerHTML = `
       <nav class="nav-bar">
         <div class="logo">COFF <span>HUB</span></div>
@@ -300,7 +290,7 @@
               <button class="btn-feedback btn-dislike" data-id="sect_intro">👎 <span>0</span></button>
             </div>
             <h2 class="content-title" id="txt-title1">Réseau COFF Absolu</h2>
-            <p id="txt-desc1" style="font-size: 1.1rem; line-height: 1.6;">Architecture LIFO stricte. Les balises s'imbriquent et se ferment dans un ordre mathématique parfait pour empêcher toute rupture de parseur.</p>
+            <p id="txt-desc1" style="font-size: 1.1rem; line-height: 1.6;">Architecture LIFO stricte via Miroir Scindé. Les balises s'imbriquent et se ferment dans un ordre mathématique parfait pour empêcher la rupture du parseur et permettre l'exécution Javascript.</p>
           </div>
           
           <div class="content-section" data-section="home_docs">
@@ -308,10 +298,12 @@
               <button class="btn-feedback btn-like" data-id="sect_docs">👍 <span>0</span></button>
               <button class="btn-feedback btn-dislike" data-id="sect_docs">👎 <span>0</span></button>
             </div>
-            <h2 class="content-title">Structure LIFO Finale</h2>
+            <h2 class="content-title">Structure LIFO (Miroir Scindé)</h2>
             <p style="font-size: 1.1rem; line-height: 1.6; font-family: monospace; color: var(--fluo-green); background: #000; padding: 15px; border-radius: 4px;">
-              html > head > meta > meta > title > style > body > Value > co > co > co > co > script<br>
-              <span style="color: #ff3333;">/script > /co > /co > /co > /co > /Value > /body > /style > /title > /meta > /meta > /head > /html</span>
+              [Pensée] html > head > meta > title > style<br>
+              <span style="color: #ff3333;">/style > /title > /meta > /head</span><br><br>
+              [Action] body > Value > co > script<br>
+              <span style="color: #ff3333;">/script > /co > /Value > /body > /html</span>
             </p>
           </div>
         </div>
@@ -331,7 +323,7 @@
                   <span class="editor-title">Source.coff</span>
                   <button class="btn-toggle" id="btn-toggle-com">Afficher/Masquer Commentaires</button>
                 </div>
-                <textarea id="code-editor" spellcheck="false">${codeWithComments.replace(/<\\\/title>/g, '</title>')}</textarea>
+                <textarea id="code-editor" spellcheck="false">${codeWithComments.replace(/<\\\/head>/g, '</head>').replace(/<\\\/title>/g, '</title>').replace(/<\\\/style>/g, '</style>')}</textarea>
                 <button id="run-code" class="btn-action">🚀 Compiler le Code</button>
               </div>
 
@@ -348,13 +340,13 @@
       </div>
     `;
 
-    // --- CHANGEMENT DE THEME ---
+    // Gestion Thème
     document.getElementById('theme-selector').addEventListener('change', (e) => {
       document.body.className = '';
       if(e.target.value !== 'dark') document.body.classList.add(`theme-${e.target.value}`);
     });
 
-    // --- CHANGEMENT DE LANGAGE ---
+    // Gestion Traduction
     document.getElementById('lang-selector').addEventListener('change', (e) => {
       const dict = langDict[e.target.value];
       document.getElementById('btn-nav1').innerText = dict.nav1;
@@ -366,7 +358,7 @@
       document.getElementById('btn-toggle-com').innerText = dict.toggleCom;
     });
 
-    // --- GESTION DES COMMENTAIRES ---
+    // Gestion Toggle Commentaires
     const btnToggleCom = document.getElementById('btn-toggle-com');
     const editor = document.getElementById('code-editor');
     let commentsVisible = true;
@@ -376,14 +368,14 @@
         btnToggleCom.style.color = "var(--text-muted)";
         btnToggleCom.style.borderColor = "var(--text-muted)";
       } else {
-        editor.value = codeWithComments.replace(/<\\\/title>/g, '</title>');
+        editor.value = codeWithComments.replace(/<\\\/head>/g, '</head>').replace(/<\\\/title>/g, '</title>').replace(/<\\\/style>/g, '</style>');
         btnToggleCom.style.color = "var(--jvc-orange)";
         btnToggleCom.style.borderColor = "var(--jvc-orange)";
       }
       commentsVisible = !commentsVisible;
     });
 
-    // --- NAVIGATION ONGLETS ---
+    // Navigation SPA
     const navBtns = document.querySelectorAll('.nav-btn');
     const views = document.querySelectorAll('.view');
     navBtns.forEach(btn => {
@@ -395,18 +387,17 @@
       });
     });
 
-    // --- COMPILATEUR (Miroir) ---
+    // Moteur Compilation
     const runBtn = document.getElementById('run-code');
     const preview = document.getElementById('code-preview');
     runBtn.addEventListener('click', () => {
       const previewWindow = preview.contentWindow.document;
       previewWindow.open();
-      // On retire l'échappement sécurisé (\/) pour l'exécution réelle
       previewWindow.write(editor.value.replace(/<\\\//g, '</'));
       previewWindow.close();
     });
 
-    // --- MINI-SERVEUR LOCAL (Likes/Dislikes) ---
+    // Serveur Local Storage Feedback
     const likeBtns = document.querySelectorAll('.btn-like');
     const dislikeBtns = document.querySelectorAll('.btn-dislike');
 
@@ -456,13 +447,7 @@
   });
 </script>
 
-<!-- LA FERMETURE ABSOLUE ET STRICTE (Sans doublons) -->
 </co>
 </Value>
 </body>
-</style>
-</title>
-</meta>
-</meta>
-</head>
 </html>
