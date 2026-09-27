@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+<langfr>
+</lang>
 <html>
 <bibliotheque>
 
-<!-- 1. STYLE DANS BIBLIOTHEQUE -->
+<!-- 1. UN SEUL STYLE : Design et Invisibilité Quantique -->
 <style>
-  /* Verrouillage absolu : empêche le texte COFF (UTF-8, etc.) de baver sur l'écran */
-  meta, lang, charset, viewport, theme-color, attributes, Value, co { display: none !important; }
+  meta, lang, charset, viewport, theme-color, attributes, Value, co, bibliotheque { display: none !important; }
 
   :root { 
     --bg-dark: #05050a; --bg-panel: #101424; 
@@ -31,11 +32,11 @@
   .btn-feedback:hover { background: rgba(255,255,255,0.05); }
   .btn-like.active { border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
   .btn-dislike.active { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px rgba(255,0,85,0.3); }
-
-/* 2. SCRIPT "DANS" STYLE : Rupture quantique pour permettre l'exécution tout en gardant l'entonnoir */
 </style>
+
+<!-- 2. UN SEUL SCRIPT : Le Moteur qui génère les dimensions internes -->
 <script>
-  // 3. VALUE DANS SCRIPT ET CO DANS VALUE : La matrice structurelle est générée par le JS
+  // 3. LA MATRICE COFF (Métadonnées, Value et co injectées de l'intérieur)
   const matriceCoff = `
     <meta>
       <lang>fr</lang>
@@ -54,10 +55,10 @@
     </Value>
   `;
 
-  // Injection pure de la structure COFF dans la page
+  // Le script écrit la structure COFF pure dans le DOM
   document.write(matriceCoff);
 
-  // Variable contenant exactement ton code Hello World pour l'éditeur, échappé pour éviter toute rupture
+  // Le code Hello World absolu, sécurisé contre la rupture de parseur terrestre (\x2F = /)
   const helloWorldSource = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -78,7 +79,7 @@
   .btn-accept { background: linear-gradient(90deg, #ff0055, #00e5ff); border: none; color: #fff; padding: 12px 24px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
   @keyframes glitch { 0% { text-shadow: 3px 3px 0 #0ff, -3px -3px 0 #f05; } 50% { text-shadow: -3px 3px 0 #0ff, 3px -3px 0 #f05; } 100% { text-shadow: 3px -3px 0 #0ff, -3px -3px 0 #f05; } }
   .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
-</style>
+<\x2Fstyle>
 <body>
 
 <Value>
@@ -87,21 +88,23 @@
 <co property="VisualEngine" symbol="🎆">
 <co id="BoostEngine" type="CoreMultiplier">
 
-<a1> BannerClick ➡️ ActionTrigger ⚡ </a1>
-<b2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </b2>
-<c3> BassAmplitude ↕️ ParticleVelocity 📈 </c3>
-<d4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </d4>
+<a1> BannerClick ➡️ ActionTrigger ⚡ <\x2Fa1>
+<b2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 <\x2Fb2>
+<c3> BassAmplitude ↕️ ParticleVelocity 📈 <\x2Fc3>
+<d4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ <\x2Fd4>
 
 <div id="consent-modal">
   <div class="modal-card">
-    <h2>⚠️ Système COFF en attente</h2>
+    <h2 style="color:#fff;">⚠️ Système COFF en attente</h2>
+    <br>
     <button class="btn-accept" onclick="acceptConsent()">🚀 Activer</button>
   </div>
 </div>
-<canvas id="canvas-bg"></canvas>
+<canvas id="canvas-bg"><\x2Fcanvas>
 <div class="container">
-  <h1 id="title">HELLO WORLD 🚀</h1>
-  <div id="trigger-banner"><span>DÉCLENCHER</span></div>
+  <h1 id="title">HELLO WORLD 🚀<\x2Fh1>
+  <div id="trigger-banner"><span>DÉCLENCHER<\x2Fspan><\x2Fdiv>
+</div>
 
 <script>
   const canvas = document.getElementById('canvas-bg');
@@ -194,26 +197,20 @@
     }
   }
   animate();
-<\\/script>
+<\x2Fscript>
 
-</co>
-</co>
-</co>
-</co>
-</Value>
+<\x2Fco>
+<\x2Fco>
+<\x2Fco>
+<\x2Fco>
+<\x2FValue>
 
-</body>
-</style>
-</title>
-</meta>
-</meta>
-</head>
-</html>`;
+<\x2Fbody>
+<\x2Fhtml>`;
 
   document.addEventListener("DOMContentLoaded", () => {
     const appMount = document.getElementById('app-mount');
     
-    // Le Moteur JS assemble l'interface dans la div cible
     appMount.innerHTML = `
       <nav class="nav-bar">
         <div style="font-family:'Impact'; font-size:2rem; color:var(--neon-pink); letter-spacing:2px;">COFF <span style="color:var(--neon-cyan);">HUB</span></div>
@@ -225,7 +222,6 @@
       </nav>
 
       <div class="view-container">
-        
         <div id="view-articles" class="view active">
           <h2 style="color:var(--neon-yellow); margin-bottom: 20px; font-family:'Impact'; font-size:2.5rem; text-transform: uppercase;">Flux de Connaissances</h2>
           <div class="article-card">
@@ -250,8 +246,7 @@
                 <span>Code Source (Séquence COFF)</span>
                 <span>LIFO Exact 🛡️</span>
               </div>
-              <!-- Insertion parfaite par variables pour ne pas briser le parser -->
-              <textarea id="code-editor" spellcheck="false" style="flex: 1; background: #0a0d18; color: var(--neon-cyan); border: 2px solid var(--neon-pink); border-top: none; padding: 15px; font-family: monospace; font-size: 0.9rem; resize: none; white-space: pre; overflow-y: auto;">${helloWorldSource.replace(/<\\\//g, '</')}</textarea>
+              <textarea id="code-editor" spellcheck="false" style="flex: 1; background: #0a0d18; color: var(--neon-cyan); border: 2px solid var(--neon-pink); border-top: none; padding: 15px; font-family: monospace; font-size: 0.9rem; resize: none; white-space: pre; overflow-y: auto;">${helloWorldSource}</textarea>
               <button id="run-code" style="background: var(--neon-yellow); color: #000; border: none; padding: 15px; border-radius: 0 0 4px 4px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s;">🚀 Compiler & Réfracter</button>
             </div>
 
@@ -283,11 +278,9 @@
             </div>
           </div>
         </div>
-
       </div>
     `;
 
-    // SYSTEME DE NAVIGATION
     const navBtns = document.querySelectorAll('.nav-btn');
     const views = document.querySelectorAll('.view');
     navBtns.forEach(btn => {
@@ -299,20 +292,19 @@
       });
     });
 
-    // MOTEUR RÉFRACTIF (Éditeur -> Iframe)
     const runBtn = document.getElementById('run-code');
     const editor = document.getElementById('code-editor');
     const preview = document.getElementById('code-preview');
     runBtn.addEventListener('click', () => {
       const previewWindow = preview.contentWindow.document;
       previewWindow.open();
-      previewWindow.write(editor.value);
+      // On retire l'échappement de sécurité juste avant l'exécution visuelle
+      previewWindow.write(editor.value.replace(/<\\x2F/g, '</'));
       previewWindow.close();
       runBtn.style.boxShadow = "0 0 15px var(--neon-yellow)";
       setTimeout(() => runBtn.style.boxShadow = "none", 300);
     });
 
-    // SYSTEME FEEDBACK LIFO
     const btnLike = document.querySelector('.btn-like');
     const btnDislike = document.querySelector('.btn-dislike');
     btnLike.addEventListener('click', () => {
@@ -347,5 +339,8 @@
     });
   });
 </script>
+
+<!-- 4. FERMETURE LIFO FINALE EXACTE -->
 </bibliotheque>
 </html>
+
