@@ -1,10 +1,112 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hello World - COFF V4 Logique Absolue</title>
+<html>
+<lang>
+<bibliotheque>
+
+<!-- 1. LE STYLE (Design et Cosmétique) -->
 <style>
+  :root { 
+    --bg-dark: #05050a; --bg-panel: #101424; 
+    --neon-cyan: #00e5ff; --neon-pink: #ff0055; 
+    --neon-yellow: #ffcc00; --text-main: #f0f0f5; --text-muted: #8892b0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; touch-action: manipulation; }
+  body { background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+  
+  .nav-bar { background: var(--bg-panel); border-bottom: 2px solid var(--neon-pink); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .nav-menu { display: flex; gap: 10px; }
+  .nav-btn { background: transparent; border: 1px solid var(--neon-cyan); color: var(--text-main); padding: 8px 16px; cursor: pointer; border-radius: 4px; text-transform: uppercase; font-weight: bold; transition: all 0.2s; }
+  .nav-btn.active, .nav-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 10px var(--neon-cyan); }
+  
+  .view-container { max-width: 1200px; margin: 0 auto; padding: 30px; }
+  .view { display: none; animation: fadeIn 0.3s ease; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .article-card { background: var(--bg-panel); border-left: 4px solid var(--neon-cyan); padding: 25px; border-radius: 0 8px 8px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 30px; }
+  .feedback-panel { display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid rgba(0,229,255,0.2); padding-top: 15px; }
+  .btn-feedback { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+  .btn-feedback:hover { background: rgba(255,255,255,0.05); }
+  .btn-like.active { border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
+  .btn-dislike.active { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px rgba(255,0,85,0.3); }
+</style>
+
+<!-- 2. LES MÉTADONNÉES ISOLEES -->
+<meta>
+  <charset>UTF-8</charset>
+  <viewport>width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no</viewport>
+  <theme-color>#05050a</theme-color>
+</meta>
+
+<!-- 3. LA STRUCTURE COFF ET LA MATIÈRE HTML -->
+<Value>
+  <co>
+    <attributes>
+      <id>SpaApplicationRoot</id>
+    </attributes>
+    
+    <co>
+      <attributes>
+        <id>EngineTarget</id>
+      </attributes>
+      
+      <!-- CIBLE DOM POUR L'INJECTION JS -->
+      <div id="app-mount"></div>
+
+      <!-- 4. MOTEUR D'ASSEMBLAGE JAVASCRIPT -->
+      <script>
+        const appMount = document.getElementById('app-mount');
+
+        appMount.innerHTML = `
+          <nav class="nav-bar">
+            <div style="font-family:'Impact'; font-size:2rem; color:var(--neon-pink); letter-spacing:2px;">COFF <span style="color:var(--neon-cyan);">HUB</span></div>
+            <div class="nav-menu">
+              <button class="nav-btn active" data-target="view-articles">Accueil & Articles</button>
+              <button class="nav-btn" data-target="view-editor">Éditeur & Réfraction</button>
+              <button class="nav-btn" data-target="view-bio">Bio Architecte</button>
+            </div>
+          </nav>
+
+          <div class="view-container">
+            
+            <!-- VUE 1 : ARTICLES (TUTO ET FEEDBACK) -->
+            <div id="view-articles" class="view active">
+              <h2 style="color:var(--neon-yellow); margin-bottom: 20px; font-family:'Impact'; font-size:2.5rem; text-transform: uppercase;">Flux de Connaissances</h2>
+              
+              <div class="article-card">
+                <h3 style="color:var(--neon-pink); font-size:1.8rem; margin-bottom:15px;">Tutoriel : Déployer la Matrice "Hello World" en COFF V4</h3>
+                <p style="color:var(--text-main); line-height:1.6; font-size: 1.05rem;">
+                  L'architecture absolue de COFF requiert une symétrie parfaite de l'entonnoir LIFO (Last In, First Out). La gestion des balises entrantes et fermantes est le cœur du réacteur : c'est ce qui évite les erreurs critiques de rupture du parseur.
+                  <br><br>
+                  Dans l'éditeur, observez l'intégration du système de particules dynamique. Les actions de l'utilisateur (comme le spam clic) déclenchent directement le <strong>BoostEngine</strong> pour saturer l'écran de particules colorées, démontrant la liaison spatio-temporelle entre votre DOM purifié et le moteur de rendu visuel et sonore.
+                </p>
+                
+                <div class="feedback-panel">
+                  <button class="btn-feedback btn-like" data-count="1">👍 +<span class="count-display">1</span></button>
+                  <button class="btn-feedback btn-dislike" data-count="0">👎 -<span class="count-display">0</span></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- VUE 2 : ÉDITEUR DE CODE ET MIROIR ABSOLU -->
+            <div id="view-editor" class="view">
+              <h2 style="color:var(--neon-cyan); margin-bottom: 20px; font-family:'Impact'; font-size:2.5rem; text-transform: uppercase;">Cellule Motrice de Réfraction</h2>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 650px;">
+                <div style="display: flex; flex-direction: column;">
+                  <div style="background: var(--neon-pink); color: #000; font-weight: bold; padding: 10px 15px; border-radius: 4px 4px 0 0; text-transform: uppercase; display: flex; justify-content: space-between;">
+                    <span>Code Source (Séquence COFF)</span>
+                    <span>LIFO Exact 🛡️</span>
+                  </div>
+                  <!-- Injection exacte du code source calqué sur le modèle fourni -->
+                  <textarea id="code-editor" spellcheck="false" style="flex: 1; background: #0a0d18; color: var(--neon-cyan); border: 2px solid var(--neon-pink); border-top: none; padding: 15px; font-family: monospace; font-size: 0.9rem; resize: none; white-space: pre; overflow-y: auto;">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;title&gt;Hello World - COFF V4 Logique Absolue&lt;/title&gt;
+&lt;style&gt;
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body, html { width: 100%; height: 100%; overflow: hidden; background: #05050a; font-family: 'Impact', sans-serif; display: flex; justify-content: center; align-items: center; }
   #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; }
@@ -18,32 +120,32 @@
   .btn-accept { background: linear-gradient(90deg, #ff0055, #00e5ff); border: none; color: #fff; padding: 12px 24px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; }
   @keyframes glitch { 0% { text-shadow: 3px 3px 0 #0ff, -3px -3px 0 #f05; } 50% { text-shadow: -3px 3px 0 #0ff, 3px -3px 0 #f05; } 100% { text-shadow: 3px -3px 0 #0ff, -3px -3px 0 #f05; } }
   .overload-text { color: #fff !important; text-shadow: 0 0 30px #fff, 0 0 60px #fc0, 0 0 90px #f05 !important; animation: glitch 0.1s infinite !important; }
-</style>
-<body>
+&lt;/style&gt;
+&lt;body&gt;
 
-<Value>
-<co id="CoffSystemRoot" type="AppModule">
-<co property="AudioEngine" state="standby">
-<co property="VisualEngine" symbol="🎆">
-<co id="BoostEngine" type="CoreMultiplier">
+&lt;Value&gt;
+&lt;co id="CoffSystemRoot" type="AppModule"&gt;
+&lt;co property="AudioEngine" state="standby"&gt;
+&lt;co property="VisualEngine" symbol="🎆"&gt;
+&lt;co id="BoostEngine" type="CoreMultiplier"&gt;
 
-<a1> BannerClick ➡️ ActionTrigger ⚡ </a1>
-<b2> ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 </b2>
-<c3> BassAmplitude ↕️ ParticleVelocity 📈 </c3>
-<d4> UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ </d4>
+&lt;a1&gt; BannerClick ➡️ ActionTrigger ⚡ &lt;/a1&gt;
+&lt;b2&gt; ActionTrigger ➡️➡️ VisualEngine 🎆 ➕ AudioEngine 🎵 &lt;/b2&gt;
+&lt;c3&gt; BassAmplitude ↕️ ParticleVelocity 📈 &lt;/c3&gt;
+&lt;d4&gt; UserSpamClick ⏩ ➡️➡️ BoostEngine ☢️ &lt;/d4&gt;
 
-<div id="consent-modal">
-  <div class="modal-card">
-    <h2>⚠️ Système COFF en attente</h2>
-    <button class="btn-accept" onclick="acceptConsent()">🚀 Activer</button>
-  </div>
-</div>
-<canvas id="canvas-bg"></canvas>
-<div class="container">
-  <h1 id="title">HELLO WORLD 🚀</h1>
-  <div id="trigger-banner"><span>DÉCLENCHER</span></div>
+&lt;div id="consent-modal"&gt;
+  &lt;div class="modal-card"&gt;
+    &lt;h2&gt;⚠️ Système COFF en attente&lt;/h2&gt;
+    &lt;button class="btn-accept" onclick="acceptConsent()"&gt;🚀 Activer&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;canvas id="canvas-bg"&gt;&lt;/canvas&gt;
+&lt;div class="container"&gt;
+  &lt;h1 id="title"&gt;HELLO WORLD 🚀&lt;/h1&gt;
+  &lt;div id="trigger-banner"&gt;&lt;span&gt;DÉCLENCHER&lt;/span&gt;&lt;/div&gt;
 
-<script>
+&lt;script&gt;
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
   const banner = document.getElementById('trigger-banner');
@@ -134,18 +236,131 @@
     }
   }
   animate();
-</script>
+&lt;/script&gt;
 
-</co>
-</co>
-</co>
-</co>
+&lt;/co&gt;
+&lt;/co&gt;
+&lt;/co&gt;
+&lt;/co&gt;
+&lt;/Value&gt;
+
+&lt;/body&gt;
+&lt;/style&gt;
+&lt;/title&gt;
+&lt;/meta&gt;
+&lt;/meta&gt;
+&lt;/head&gt;
+&lt;/html&gt;</textarea>
+                  <button id="run-code" style="background: var(--neon-yellow); color: #000; border: none; padding: 15px; border-radius: 0 0 4px 4px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s;">🚀 Compiler & Réfracter</button>
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                  <div style="background: var(--neon-cyan); color: #000; font-weight: bold; padding: 10px 15px; border-radius: 4px 4px 0 0; text-transform: uppercase; display: flex; justify-content: space-between;">
+                    <span>Miroir Absolu (Preview)</span>
+                    <span>Live 🟢</span>
+                  </div>
+                  <iframe id="code-preview" style="flex: 1; background: #000; border: 2px solid var(--neon-cyan); border-top: none; border-radius: 0 0 4px 4px; width: 100%;"></iframe>
+                </div>
+              </div>
+            </div>
+
+            <!-- VUE 3 : BIO ARCHITECTE -->
+            <div id="view-bio" class="view">
+              <h2 style="color:var(--neon-pink); margin-bottom: 20px; font-family:'Impact'; font-size:2.5rem; text-transform: uppercase;">Profil & Entité</h2>
+              <div style="background: var(--bg-panel); border-left: 4px solid var(--neon-yellow); padding: 30px; border-radius: 0 8px 8px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                <h3 style="color:var(--neon-yellow); font-size: 2.2rem; margin-bottom: 15px; font-family:'Impact';">@Samintox</h3>
+                <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin-bottom: 20px;">
+                  <strong style="color:var(--neon-cyan);">Âge :</strong> <span>32 ans</span>
+                  <strong style="color:var(--neon-cyan);">Localisation :</strong> <span>Israël</span>
+                  <strong style="color:var(--neon-cyan);">Affiliation :</strong> <span>ViArtificial Labs</span>
+                </div>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                  <p style="color:var(--text-main); line-height: 1.7; font-size: 1.05rem;">
+                    Architecte système et créateur de l'architecture COFF. Responsable de la conception de plateformes hybrides et de l'intégration de la biochimie du code dans les applications PWA. L'ingénierie du <strong>Miroir Absolu</strong> et la gestion mathématique de l'entonnoir LIFO sont le résultat direct d'une volonté de purifier la structure web.
+                    <br><br>
+                    Également forgeron d'expériences interactives : l'impact de jeux d'action cinétiques (Warframe, World of Warcraft, Albion) a profondément influencé le développement de ses propres moteurs de particules et de la logique de récompense haptique, aboutissant à des concepts comme <i>RollsPunch</i> ou <i>Librarchia</i>, et se matérialisant aujourd'hui dans ce Hub Cybernétique.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        // LOGIQUE DE NAVIGATION SPA
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const views = document.querySelectorAll('.view');
+        
+        navBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            views.forEach(v => v.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+          });
+        });
+
+        // MOTEUR RÉFRACTIF (Éditeur -> Iframe)
+        const runBtn = document.getElementById('run-code');
+        const editor = document.getElementById('code-editor');
+        const preview = document.getElementById('code-preview');
+
+        runBtn.addEventListener('click', () => {
+          const codeBase = editor.value;
+          const previewWindow = preview.contentWindow.document;
+          previewWindow.open();
+          previewWindow.write(codeBase);
+          previewWindow.close();
+          
+          runBtn.style.boxShadow = "0 0 15px var(--neon-yellow)";
+          setTimeout(() => runBtn.style.boxShadow = "none", 300);
+        });
+
+        // SYSTÈME DE FEEDBACK SOCIAL
+        const btnLike = document.querySelector('.btn-like');
+        const btnDislike = document.querySelector('.btn-dislike');
+        
+        btnLike.addEventListener('click', () => {
+          let count = parseInt(btnLike.getAttribute('data-count'));
+          if (!btnLike.classList.contains('active')) {
+            count++;
+            btnLike.classList.add('active');
+            btnLike.setAttribute('data-count', count);
+            btnLike.querySelector('.count-display').textContent = count;
+            
+            if (btnDislike.classList.contains('active')) {
+               let disCount = parseInt(btnDislike.getAttribute('data-count')) - 1;
+               btnDislike.setAttribute('data-count', disCount);
+               btnDislike.querySelector('.count-display').textContent = disCount;
+               btnDislike.classList.remove('active');
+            }
+          }
+        });
+
+        btnDislike.addEventListener('click', () => {
+          let count = parseInt(btnDislike.getAttribute('data-count'));
+          if (!btnDislike.classList.contains('active')) {
+            count++;
+            btnDislike.classList.add('active');
+            btnDislike.setAttribute('data-count', count);
+            btnDislike.querySelector('.count-display').textContent = count;
+            
+            if (btnLike.classList.contains('active')) {
+               let likeCount = parseInt(btnLike.getAttribute('data-count')) - 1;
+               btnLike.setAttribute('data-count', likeCount);
+               btnLike.querySelector('.count-display').textContent = likeCount;
+               btnLike.classList.remove('active');
+            }
+          }
+        });
+
+      </script>
+
+    <!-- 5. FERMETURES LIFO MATHÉMATIQUES -->
+    </co>
+  </co>
 </Value>
 
-</body>
-</style>
-</title>
-</meta>
-</meta>
-</head>
+</bibliotheque>
+</lang>
 </html>
