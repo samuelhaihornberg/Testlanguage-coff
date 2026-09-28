@@ -1,0 +1,750 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>COFF Lab</title>
+<style>
+  :root{
+    --bg:#05060a; --bg-elev:#10121c; --bg-elev-2:#171a29; --border:#262a3d;
+    --text:#eef0fb; --text-dim:#9aa0c0; --text-faint:#5c6086;
+    --accent:#ff2f6e; --accent-soft:#ff2f6e33; --accent-2:#00e5ff; --accent-2-soft:#00e5ff26;
+    --accent-3:#ffcc00; --success:#2ee6a6; --danger:#ff5577;
+    --radius:14px; --radius-sm:8px;
+    --font-display:'Rajdhani',"Arial Narrow",sans-serif;
+    --font-body:'Manrope',"Segoe UI",sans-serif;
+    --font-mono:'JetBrains Mono',Consolas,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  [hidden]{display:none!important;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.5;padding:0 16px;}
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;letter-spacing:.02em;margin:0;}
+  p{margin:0 0 .6em;color:var(--text-dim);max-width:65ch;}
+  code,pre,textarea.code{font-family:var(--font-mono);}
+  a{color:var(--accent-2);}
+  button{font-family:var(--font-body);cursor:pointer;}
+  ::selection{background:var(--accent-soft);}
+
+  .wrap{max-width:1040px;margin:0 auto;}
+
+  header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,6,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding-block:12px;margin:0 -16px;padding-inline:16px;}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;}
+  .brand .mark{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text);}
+  .brand .mark span{color:var(--accent);}
+  .brand .tag{font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;}
+
+  nav.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs button{flex:0 0 auto;background:transparent;border:1px solid transparent;color:var(--text-dim);padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:600;white-space:nowrap;transition:.15s;}
+  nav.tabs button:hover{color:var(--text);border-color:var(--border);}
+  nav.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);}
+
+  .subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+  .subtabs button{background:var(--bg-elev);border:1px solid var(--border);color:var(--text-dim);padding:7px 13px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;}
+  .subtabs button[aria-selected="true"]{color:var(--accent-2);border-color:var(--accent-2);background:var(--accent-2-soft);}
+
+  main{padding-block:28px 60px;}
+  section.panel{display:flex;flex-direction:column;gap:6px;}
+
+  .eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:6px;}
+  .hero-title{font-size:clamp(1.7rem,5vw,2.6rem);margin-bottom:10px;}
+  .lede{font-size:1rem;max-width:60ch;margin-bottom:22px;}
+
+  .grid{display:grid;gap:16px;}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr);}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:720px){.grid.cols-2,.grid.cols-3{grid-template-columns:1fr;}}
+
+  .card{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+  .card h3{font-size:1.05rem;margin-bottom:6px;}
+  .card .badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--accent-2-soft);color:var(--accent-2);margin-bottom:8px;}
+
+  .stat-row{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;}
+  .stat{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;min-width:140px;}
+  .stat .n{font-family:var(--font-display);font-size:1.6rem;color:var(--accent-3);font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--bg-elev-2);color:var(--text);padding:10px 18px;border-radius:var(--radius-sm);font-weight:700;font-size:.88rem;}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),#ff6f9c);border-color:transparent;color:#1a0510;}
+  .btn.ghost{background:transparent;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+
+  canvas#golemCanvas{width:100%;height:280px;border-radius:var(--radius);background:#000;display:block;border:1px solid var(--border);touch-action:none;}
+  .golem-stage{position:relative;}
+  .golem-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;text-align:center;}
+  .golem-overlay h2{font-size:2rem;color:var(--accent);text-shadow:0 0 18px var(--accent),0 0 34px var(--accent-2);}
+  .golem-overlay button{pointer-events:auto;}
+
+  /* ViA chat */
+  .chat{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;height:420px;overflow:hidden;}
+  .chat-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+  .msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:.9rem;}
+  .msg.bot{background:var(--bg-elev-2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+  .msg.user{background:var(--accent-soft);border:1px solid var(--accent);align-self:flex-end;border-bottom-right-radius:4px;color:var(--text);}
+  .chat-input{display:flex;border-top:1px solid var(--border);}
+  .chat-input input{flex:1;background:transparent;border:0;color:var(--text);padding:14px;font-size:.9rem;outline:none;}
+  .chat-input button{background:var(--accent);border:0;color:#1a0510;font-weight:700;padding:0 20px;}
+
+  /* Guideoplan board */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:720px){.board{grid-template-columns:1fr;}}
+  .col{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;min-height:120px;}
+  .col h4{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);}
+  .task{background:var(--bg-elev-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:.85rem;}
+  .task .pill{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:6px;}
+  .pill.meso{background:var(--accent-2-soft);color:var(--accent-2);}
+  .pill.meta{background:#ffcc0026;color:var(--accent-3);}
+  .pill.pro{background:var(--accent-soft);color:var(--accent);}
+
+  /* Editor */
+  .editor-wrap{display:grid;grid-template-columns:1fr;gap:14px;}
+  textarea.code{width:100%;min-height:340px;background:#000;color:#c9ffea;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:.82rem;line-height:1.5;resize:vertical;}
+  .kernel-line{display:flex;align-items:center;gap:10px;font-size:.78rem;color:var(--text-faint);margin:8px 0;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint);}
+  .dot.on{background:var(--success);box-shadow:0 0 8px var(--success);}
+  iframe#previewFrame{width:100%;height:340px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#000;}
+  pre.log{background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:.75rem;max-height:180px;overflow:auto;color:var(--text-dim);}
+
+  /* Modal (own, since confirm()/alert() are inert in artifacts) */
+  .modal-backdrop{position:fixed;inset:0;background:#000000cc;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px;}
+  .modal{background:var(--bg-elev);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;max-width:380px;text-align:center;}
+  .modal h3{margin-bottom:10px;}
+  .modal .row{display:flex;gap:10px;justify-content:center;margin-top:16px;}
+
+  /* Forum */
+  .post{border-bottom:1px solid var(--border);padding:16px 0;}
+  .post:last-child{border-bottom:0;}
+  .post .meta{font-size:.72rem;color:var(--text-faint);margin-bottom:4px;}
+  .post h3{margin-bottom:6px;}
+  .poll{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+  .poll button{display:flex;justify-content:space-between;background:var(--bg-elev-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:.85rem;}
+  .poll button b{color:var(--accent-2);}
+
+  /* Compte */
+  .form-card{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:420px;}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+  .field label{font-size:.75rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .field input,.field select{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:.9rem;}
+  .plan{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;}
+  .plan.active{border-color:var(--accent-2);background:var(--accent-2-soft);}
+
+  .note{background:var(--accent-2-soft);border:1px solid var(--accent-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:.82rem;color:var(--text-dim);margin:14px 0;}
+  .note.warn{background:#ffcc0018;border-color:var(--accent-3);}
+  .note strong{color:var(--text);}
+
+  .queue-bar{height:10px;border-radius:999px;background:var(--bg-elev-2);overflow:hidden;margin:8px 0;}
+  .queue-bar > div{height:100%;background:linear-gradient(90deg,var(--accent-2),var(--success));}
+
+  footer{border-top:1px solid var(--border);padding:24px 0 40px;color:var(--text-faint);font-size:.78rem;}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <span class="mark">COFF<span>LAB</span></span>
+    <span class="tag">Famille SuperBots</span>
+  </div>
+  <nav class="tabs" id="mainNav">
+    <button data-tab="golem" aria-selected="true">⚡ Golem Motor</button>
+    <button data-tab="via">🤝 ViA</button>
+    <button data-tab="guideoplan">🗺️ Guideoplan</button>
+    <button data-tab="vitrine">🏪 Vitrine</button>
+    <button data-tab="devsbot">👨‍💻 DevsBot · COFF</button>
+    <button data-tab="forum">💬 Forum</button>
+    <button data-tab="compte">👤 Compte</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ GOLEM MOTOR ============ -->
+  <section class="panel" id="tab-golem">
+    <div class="eyebrow">Pattern · Boost · Jeu &amp; Streaming</div>
+    <h1 class="hero-title">Golem Motor</h1>
+    <p class="lede">Le moteur BSLM (blocs sémantiques logiques matriciels) de la famille, ici sous sa forme jouable : cliquez le déclencheur, enchaînez les clics pour passer en surrégime, et mesurez le moteur COFF en direct.</p>
+
+    <div class="golem-stage">
+      <canvas id="golemCanvas"></canvas>
+      <div class="golem-overlay">
+        <h2 id="golemTitle">DÉCLENCHEUR</h2>
+        <button class="btn primary" id="golemBtn">🚀 Déclencher</button>
+      </div>
+    </div>
+
+    <div class="stat-row" id="golemStats">
+      <div class="stat"><div class="n" id="statClicks">0</div><div class="l">Déclenchements</div></div>
+      <div class="stat"><div class="n" id="statParticles">0</div><div class="l">Particules actives</div></div>
+      <div class="stat"><div class="n" id="statCombo">0</div><div class="l">Combo en cours</div></div>
+    </div>
+
+    <div class="card">
+      <span class="badge">Preuve d'efficacité</span>
+      <h3>Banc d'essai du moteur Syntaxor</h3>
+      <p>Compile un bloc COFF réel (11 balises imbriquées) directement dans votre navigateur, en boucle, pour mesurer la vitesse réelle du parseur sur cet appareil.</p>
+      <button class="btn" id="benchBtn">Lancer 2 000 compilations</button>
+      <div class="stat-row" id="benchStats" hidden>
+        <div class="stat"><div class="n" id="benchTotal">–</div><div class="l">Temps total (ms)</div></div>
+        <div class="stat"><div class="n" id="benchAvg">–</div><div class="l">µs / compilation</div></div>
+        <div class="stat"><div class="n" id="benchRate">–</div><div class="l">Compilations / seconde</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIA ============ -->
+  <section class="panel" id="tab-via" hidden>
+    <div class="eyebrow">Mattern · Superpote pro</div>
+    <h1 class="hero-title">ViA</h1>
+    <p class="lede">Cyber-assistante de la famille : elle vulgarise, reformule et vérifie. Démonstration hors-ligne avec des réponses préparées — aucun modèle n'est appelé ici.</p>
+
+    <div class="chat">
+      <div class="chat-log" id="viaLog">
+        <div class="msg bot">Bonjour. Je suis ViA. Posez une question sur COFF, Golem Motor ou la famille SuperBots — j'ai quelques réponses toutes prêtes pour cette démo.</div>
+      </div>
+      <div class="chat-input">
+        <input id="viaInput" type="text" placeholder="Écrire à ViA…" />
+        <button id="viaSend">Envoyer</button>
+      </div>
+    </div>
+    <p style="margin-top:10px;font-size:.78rem;color:var(--text-faint);">Démo locale : essayez « coff », « golem », « famille » ou « bonjour ».</p>
+  </section>
+
+  <!-- ============ GUIDEOPLAN ============ -->
+  <section class="panel" id="tab-guideoplan" hidden>
+    <div class="eyebrow">Pattern · Guidage</div>
+    <h1 class="hero-title">Guideoplan</h1>
+    <p class="lede">Le plan du projet en trois horizons : Méso (rapide), Méta (structurant) et Pro (mise en marché).</p>
+
+    <div class="board">
+      <div class="col">
+        <h4>Méso</h4>
+        <div class="task"><span class="pill meso">Cette semaine</span>Fermer proprement le HTML compilé par Syntaxor</div>
+        <div class="task"><span class="pill meso">Cette semaine</span>Relier la règle c3 (basses → vitesse) à l'analyse audio réelle</div>
+      </div>
+      <div class="col">
+        <h4>Méta</h4>
+        <div class="task"><span class="pill meta">En cours</span>Étendre le parseur COFF à toutes les balises HTML</div>
+        <div class="task"><span class="pill meta">En cours</span>Documenter les 7 moteurs (permission, cycle de vie, remanence…)</div>
+      </div>
+      <div class="col">
+        <h4>Pro</h4>
+        <div class="task"><span class="pill pro">Prévu</span>Espace membres et abonnement</div>
+        <div class="task"><span class="pill pro">Prévu</span>Forum et blog communautaires</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VITRINE ============ -->
+  <section class="panel" id="tab-vitrine" hidden>
+    <div class="eyebrow">Vitrine · Maker · Page hybride</div>
+    <h1 class="hero-title">Atelier &amp; boutique</h1>
+    <p class="lede">Le générateur de visuels, le blog du projet, et les petits services entre membres — la partie « produits officiels de grandes marques revendus depuis Alibaba » n'est pas construite ici : elle reviendrait à fabriquer de fausses preuves d'authenticité pour écouler des articles achetés à des revendeurs non identifiés, ce qui relève de la contrefaçon. À la place, voici une vitrine honnête, avec vos propres visuels et un vrai mécanisme d'achat groupé.</p>
+
+    <div class="note warn"><strong>Ce qui a été laissé de côté :</strong> un « générateur d'image stricte selon l'officialisation des produits officiels des plus grandes marques » et un approvisionnement via des « receleurs » Alibaba. Générer des visuels faisant passer des articles pour des produits de marque officiels, pour les revendre, c'est de la contrefaçon — et s'approvisionner sciemment auprès de receleurs, c'est du recel. Je ne construis ni l'un ni l'autre, même en démo.</div>
+
+    <div class="grid cols-3">
+      <div class="card">
+        <span class="badge">Générateur</span>
+        <h3>Bannière Golem</h3>
+        <p>Générateur de visuels originaux (bannières, avatars) à partir de vos propres textes et couleurs — pas de logos ni de marques tierces.</p>
+        <canvas id="bannerCanvas" width="280" height="120" style="width:100%;border-radius:8px;border:1px solid var(--border);margin-bottom:10px;"></canvas>
+        <input type="text" id="bannerText" value="SUPERBOTS" maxlength="16" style="width:100%;margin-bottom:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);">
+        <button class="btn" id="bannerGen">Régénérer</button>
+      </div>
+
+      <div class="card">
+        <span class="badge">Services 1€</span>
+        <h3>Tricks &amp; Trocks</h3>
+        <p>Petits services entre membres, dès 1 unité de votre monnaie : relecture COFF, icône rapide, conseil d'astuce.</p>
+        <div class="task" style="margin-bottom:8px;">🔍 Relecture d'un fichier COFF — 1 €</div>
+        <div class="task" style="margin-bottom:8px;">🎨 Icône d'app en pixel-art — 2 €</div>
+        <div class="task">💡 Astuce Golem Motor sur mesure — 1 €</div>
+      </div>
+
+      <div class="card">
+        <span class="badge">Achat groupé</span>
+        <h3>File d'attente promo</h3>
+        <p>Mécanique honnête d'achat groupé : la promo se déclenche à 10 clients pour 10 articles, ou 7 clients pour 2 articles — sur vos propres produits, jamais des contrefaçons.</p>
+        <div class="queue-bar"><div id="queueFill" style="width:0%;"></div></div>
+        <div style="font-size:.8rem;color:var(--text-dim);margin-bottom:10px;"><span id="queueCount">0</span> / 10 clients en file (démo locale à cet appareil)</div>
+        <button class="btn" id="queueAdd">+ Ajouter un client (démo)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEVSBOT / COFF ============ -->
+  <section class="panel" id="tab-devsbot" hidden>
+    <div class="eyebrow">B.T.B × Golem Motor</div>
+    <h1 class="hero-title">DevsBot — Atelier COFF</h1>
+    <p class="lede">Écrivez, compilez et prévisualisez du COFF. Le moteur tourne entièrement dans le bac à sable JavaScript de votre navigateur — aucune installation, aucun accès à votre système au-delà de ce que la page affiche.</p>
+
+    <div class="subtabs" id="devsSub">
+      <button data-sub="exemple" aria-selected="true">Exemple par défaut</button>
+      <button data-sub="editeur">Éditeur</button>
+      <button data-sub="preview">Preview PWA</button>
+    </div>
+
+    <div id="dev-exemple">
+      <div class="golem-stage" style="margin-bottom:14px;">
+        <canvas id="helloCanvas" style="width:100%;height:220px;border-radius:var(--radius);background:#000;border:1px solid var(--border);"></canvas>
+        <div class="golem-overlay">
+          <h2 style="font-size:1.6rem;">HELLO WORLD 🚀</h2>
+          <button class="btn primary" id="helloBtn">Déclencher</button>
+        </div>
+      </div>
+      <p>Ceci est le COFF « Hello World » d'origine, compilé et exécuté en direct — le même que celui chargé par défaut dans l'onglet Éditeur.</p>
+    </div>
+
+    <div id="dev-editeur" hidden>
+      <div class="editor-wrap">
+        <textarea class="code" id="coffSource" spellcheck="false"></textarea>
+        <div class="kernel-line"><span class="dot" id="kernelDot"></span><span id="kernelLabel">Moteur local : en attente d'autorisation</span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" id="runBtn">▶ Exécuter</button>
+          <button class="btn ghost" id="resetBtn">↺ Réinitialiser l'exemple</button>
+        </div>
+        <pre class="log" id="runLog">En attente d'exécution…</pre>
+      </div>
+    </div>
+
+    <div id="dev-preview" hidden>
+      <iframe id="previewFrame" sandbox="allow-scripts" title="Aperçu PWA"></iframe>
+      <p style="margin-top:10px;">Rendu HTML compilé par Syntaxor depuis l'onglet Éditeur. Relancez « Exécuter » pour mettre à jour cet aperçu.</p>
+    </div>
+  </section>
+
+  <!-- ============ FORUM ============ -->
+  <section class="panel" id="tab-forum" hidden>
+    <div class="eyebrow">Communauté</div>
+    <h1 class="hero-title">Forum &amp; blog</h1>
+
+    <div class="subtabs" id="forumSub">
+      <button data-sub="articles" aria-selected="true">Articles</button>
+      <button data-sub="bio">Bio</button>
+      <button data-sub="actus">Actus geeks &amp; nerds</button>
+    </div>
+
+    <div id="forum-articles">
+      <div class="post">
+        <div class="meta">Golem Motor · il y a 2 jours</div>
+        <h3>Pourquoi le navigateur répare vos balises mal fermées</h3>
+        <p>Tour d'horizon de l'algorithme de récupération d'erreurs HTML, et pourquoi Syntaxor doit quand même bien fermer ses balises pour rester lisible par d'autres outils.</p>
+      </div>
+      <div class="post">
+        <div class="meta">B.T.B · il y a 5 jours</div>
+        <h3>La règle c3 : relier les basses à la vitesse des particules</h3>
+        <p>Premier jet d'analyse de fréquence pour piloter le moteur de dispersion en temps réel.</p>
+      </div>
+      <div class="post">
+        <div class="meta">Guideoplan · la semaine dernière</div>
+        <h3>Les trois horizons du projet : Méso, Méta, Pro</h3>
+        <p>Comment le plan se découpe pour ne jamais perdre de vue le prochain petit pas.</p>
+      </div>
+    </div>
+
+    <div id="forum-bio" hidden>
+      <div class="card" style="max-width:520px;">
+        <h3>L'équipe COFF Lab</h3>
+        <p>COFF Lab est porté par un développeur solo qui construit, en amateur passionné, un langage descriptif à balises (COFF) et une famille de personas d'aide (les SuperBots) pour compenser une culture générale large mais peu approfondie. Le projet vit sur une PWA et progresse par petites itérations publiques.</p>
+      </div>
+    </div>
+
+    <div id="forum-actus" hidden>
+      <div class="post">
+        <div class="meta">Débat ouvert</div>
+        <h3>Geek, nerd, geek-et-nerd, noob ou casu : qui est quoi ?</h3>
+        <p><strong>Geek</strong> : passionné à fond d'un univers précis (jeux, comics, code…), plus porté sur la passion et la collection que sur la technique pure.</p>
+        <p><strong>Nerd</strong> : porté sur la compréhension technique et académique — celui qui va lire la doc, démonter l'objet, comprendre le pourquoi.</p>
+        <p><strong>Geek-et-nerd</strong> : les deux à la fois — la passion ET la technique, souvent le profil qui code son propre projet par amour du sujet.</p>
+        <p><strong>Noob</strong> : débutant, encore en apprentissage, sans jugement — tout le monde commence noob.</p>
+        <p><strong>Casu (casual)</strong> : pratique sans investissement profond, y touche pour le plaisir ponctuel plutôt que pour la maîtrise.</p>
+        <div class="poll">
+          <p style="margin-bottom:2px;">Vous vous reconnaissez surtout comme :</p>
+          <button data-vote="geek">Geek <b id="v-geek">0</b></button>
+          <button data-vote="nerd">Nerd <b id="v-nerd">0</b></button>
+          <button data-vote="geeknerd">Geek-et-nerd <b id="v-geeknerd">0</b></button>
+          <button data-vote="noob">Noob <b id="v-noob">0</b></button>
+          <button data-vote="casu">Casu <b id="v-casu">0</b></button>
+        </div>
+        <p style="margin-top:10px;font-size:.75rem;color:var(--text-faint);">Sondage local à cet appareil (démo) — un vrai forum partagerait ces votes entre visiteurs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPTE ============ -->
+  <section class="panel" id="tab-compte" hidden>
+    <div class="eyebrow">Espace membre</div>
+    <h1 class="hero-title">Compte</h1>
+    <p class="lede">Prototype d'interface — aucun compte n'est réellement créé et aucun paiement n'est traité ici.</p>
+
+    <div class="subtabs" id="compteSub">
+      <button data-sub="connexion" aria-selected="true">Connexion</button>
+      <button data-sub="inscription">Inscription</button>
+      <button data-sub="abonnement">Abonnement</button>
+    </div>
+
+    <div id="compte-connexion">
+      <form class="form-card" id="formConnexion">
+        <div class="field"><label for="c-email">Email</label><input id="c-email" type="email" placeholder="vous@exemple.com"></div>
+        <div class="field"><label for="c-pass">Mot de passe</label><input id="c-pass" type="password" placeholder="••••••••"></div>
+        <button class="btn primary" type="submit">Se connecter</button>
+      </form>
+    </div>
+
+    <div id="compte-inscription" hidden>
+      <form class="form-card" id="formInscription">
+        <div class="field"><label for="i-nom">Nom d'utilisateur</label><input id="i-nom" type="text" placeholder="Samuelhaï"></div>
+        <div class="field"><label for="i-email">Email</label><input id="i-email" type="email" placeholder="vous@exemple.com"></div>
+        <div class="field"><label for="i-pass">Mot de passe</label><input id="i-pass" type="password" placeholder="••••••••"></div>
+        <button class="btn primary" type="submit">Créer le compte</button>
+      </form>
+    </div>
+
+    <div id="compte-abonnement" hidden>
+      <div class="plan"><strong>Casu</strong> — gratuit — accès lecture au forum et à l'exemple COFF.</div>
+      <div class="plan active"><strong>Geek</strong> — éditeur COFF complet, Golem Motor sans limite. <em>(plan sélectionné pour cette démo)</em></div>
+      <div class="plan"><strong>Nerd Pro</strong> — accès prioritaire aux nouveaux moteurs et export du parseur.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">COFF Lab — langage COFF, moteur Golem Motor et famille SuperBots. Prototype hors-ligne : les comptes, votes et files d'attente sont locaux à cet appareil.</div>
+</footer>
+</div>
+
+<div class="modal-backdrop" id="kernelModal" hidden>
+  <div class="modal">
+    <h3>🔐 Exécution locale du moteur COFF</h3>
+    <p>Le code sera compilé et exécuté uniquement dans le bac à sable JavaScript de cette page — aucun accès à vos fichiers ou à votre système. Autoriser ?</p>
+    <div class="row">
+      <button class="btn ghost" id="kernelDeny">Refuser</button>
+      <button class="btn primary" id="kernelAllow">Autoriser</button>
+    </div>
+  </div>
+</div>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Manrope:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Navigation générique ---------- */
+  function wireTabs(navSelector, panelPrefix, onShow){
+    const nav = document.querySelector(navSelector);
+    if(!nav) return;
+    nav.addEventListener('click', e=>{
+      const btn = e.target.closest('button[data-tab],button[data-sub]');
+      if(!btn) return;
+      const key = btn.dataset.tab || btn.dataset.sub;
+      [...nav.children].forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true':'false'));
+      document.querySelectorAll('[id^="'+panelPrefix+'"]').forEach(p=>{
+        p.hidden = p.id !== panelPrefix + key;
+      });
+      if(onShow) onShow(key);
+    });
+  }
+  wireTabs('#mainNav','tab-', key=>{ try{ localStorage.setItem('coffLabTab', key); }catch(e){} try{ history.replaceState(null,'', '#'+key); }catch(e){} });
+  wireTabs('#devsSub','dev-');
+  wireTabs('#forumSub','forum-');
+  wireTabs('#compteSub','compte-');
+
+  (function boot(){
+    let start = 'golem';
+    try{
+      const fromHash = (location.hash||'').replace('#','');
+      const valid = ['golem','via','guideoplan','vitrine','devsbot','forum','compte'];
+      if(valid.includes(fromHash)) start = fromHash;
+      else { const saved = localStorage.getItem('coffLabTab'); if(valid.includes(saved)) start = saved; }
+    }catch(e){}
+    const btn = document.querySelector('#mainNav button[data-tab="'+start+'"]');
+    if(btn) btn.click();
+  })();
+
+  /* ---------- Moteur Golem : particules ---------- */
+  function makeEngine(canvasId, opts){
+    const canvas = document.getElementById(canvasId);
+    if(!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize(){ const r = canvas.getBoundingClientRect(); canvas.width = r.width; canvas.height = r.height; }
+    window.addEventListener('resize', resize); resize();
+
+    function Particle(x,y,color,boost){
+      const angle = Math.random()*Math.PI*2;
+      const speed = boost ? Math.random()*30+8 : Math.random()*16+4;
+      this.x=x; this.y=y;
+      this.vx=Math.cos(angle)*speed; this.vy=Math.sin(angle)*speed;
+      this.size = boost ? Math.random()*16+6 : Math.random()*10+3;
+      this.color=color; this.alpha=1;
+      this.decay = boost ? Math.random()*0.035+0.02 : Math.random()*0.02+0.012;
+    }
+    Particle.prototype.update = function(){ this.x+=this.vx; this.y+=this.vy; this.vx*=0.92; this.vy*=0.92; this.alpha-=this.decay; };
+    Particle.prototype.draw = function(){
+      ctx.save(); ctx.globalAlpha = Math.max(this.alpha,0); ctx.fillStyle=this.color;
+      ctx.shadowBlur=16; ctx.shadowColor=this.color; ctx.fillRect(this.x,this.y,this.size,this.size); ctx.restore();
+    };
+    function explode(x,y,boost){
+      const colors = boost ? ['#ffffff','#ffcc00','#ff2f6e','#00e5ff'] : ['#ff2f6e','#00e5ff','#ffcc00'];
+      const count = boost ? 260 : 90;
+      for(let i=0;i<count;i++) particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)],boost));
+      if(opts && opts.onExplode) opts.onExplode(boost, particles.length);
+    }
+    function frame(){
+      requestAnimationFrame(frame);
+      ctx.fillStyle='rgba(5,6,10,0.28)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      for(let i=particles.length-1;i>=0;i--){
+        particles[i].update(); particles[i].draw();
+        if(particles[i].alpha<=0) particles.splice(i,1);
+      }
+      if(opts && opts.onFrame) opts.onFrame(particles.length);
+    }
+    frame();
+    return { explode, canvas };
+  }
+
+  const golemEngine = makeEngine('golemCanvas', {
+    onExplode(boost, count){ document.getElementById('statParticles').textContent = count; },
+    onFrame(count){ document.getElementById('statParticles').textContent = count; }
+  });
+  let golemClicks=0, golemCombo=0, golemComboTimer;
+  document.getElementById('golemBtn').addEventListener('click', ()=>{
+    golemClicks++; golemCombo++; clearTimeout(golemComboTimer);
+    document.getElementById('statClicks').textContent = golemClicks;
+    document.getElementById('statCombo').textContent = golemCombo;
+    const rect = golemEngine.canvas.getBoundingClientRect();
+    const boost = golemCombo>=4;
+    golemEngine.explode(rect.width/2, rect.height/2, boost);
+    document.getElementById('golemTitle').textContent = boost ? 'SURRÉGIME ☢️' : 'DÉCLENCHEUR';
+    golemComboTimer = setTimeout(()=>{ golemCombo=0; document.getElementById('statCombo').textContent='0'; document.getElementById('golemTitle').textContent='DÉCLENCHEUR'; }, 500);
+  });
+
+  const helloEngine = makeEngine('helloCanvas');
+  document.getElementById('helloBtn').addEventListener('click', ()=>{
+    const rect = helloEngine.canvas.getBoundingClientRect();
+    helloEngine.explode(rect.width/2, rect.height/2, false);
+  });
+
+  /* ---------- Parseur COFF (Syntaxor) ---------- */
+  const VIDES = new Set(['area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr']);
+  const BRUTS = new Set(['script','style']);
+  const ATTRS_COFF = new Set(['symbol','state','principe']);
+
+  function lireAttributs(chaine){
+    const attrs=[]; const re=/([^\s=\/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g; let m;
+    while((m=re.exec(chaine))){
+      const v = m[2]!==undefined?m[2]:(m[3]!==undefined?m[3]:(m[4]!==undefined?m[4]:true));
+      attrs.push([m[1], v]);
+    }
+    return attrs;
+  }
+  function analyserCoff(source){
+    const src = source.replace(/<\/?Value[^>]*>/g,'');
+    const racine={enfants:[]}; const pile=[racine]; const erreurs=[];
+    const re=/<co\b((?:"[^"]*"|'[^']*'|[^>"'])*)>|<\/co>/g;
+    let dernier=0, m;
+    function ajouterTexte(parent, texte){ const t=texte.trim(); if(t) parent.enfants.push({texte:t}); }
+    while((m=re.exec(src))){
+      ajouterTexte(pile[pile.length-1], src.slice(dernier, m.index));
+      dernier = re.lastIndex;
+      if(m[0]==='</co>'){ if(pile.length>1) pile.pop(); else erreurs.push('Fermeture </co> sans ouverture'); continue; }
+      let brut=m[1]; const auto=/\/\s*$/.test(brut); if(auto) brut=brut.replace(/\/\s*$/,'');
+      const attrs=lireAttributs(brut);
+      const tagAttr=attrs.find(a=>a[0]==='tag');
+      const tag = tagAttr ? String(tagAttr[1]).toLowerCase() : 'div';
+      const noeud={tag, attrs:attrs.filter(a=>a[0]!=='tag'), enfants:[], vide:false};
+      pile[pile.length-1].enfants.push(noeud);
+      if(auto || VIDES.has(tag)){ noeud.vide=true; continue; }
+      if(BRUTS.has(tag)){
+        const fin = src.indexOf('</co>', dernier);
+        const contenu = src.slice(dernier, fin<0?src.length:fin);
+        noeud.enfants.push({texte:contenu.replace(/^\n+|\s+$/g,''), brut:true});
+        re.lastIndex = fin<0?src.length:fin+5; dernier=re.lastIndex; continue;
+      }
+      pile.push(noeud);
+    }
+    ajouterTexte(pile[pile.length-1], src.slice(dernier));
+    if(pile.length>1) erreurs.push('Balises non fermées : '+pile.slice(1).map(n=>n.tag).join(', '));
+    return {racine, erreurs};
+  }
+  function echapperAttr(v){ return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+  function versHtml(racine){
+    const lignes=['<!DOCTYPE html>'];
+    function marche(noeud, niveau){
+      const pad='  '.repeat(niveau);
+      const attrs = noeud.attrs.filter(a=>!ATTRS_COFF.has(a[0]))
+        .map(a=> a[1]===true ? a[0] : a[0]+'="'+echapperAttr(a[1])+'"').join(' ');
+      const ouvrir = '<'+noeud.tag+(attrs?' '+attrs:'')+'>';
+      lignes.push(pad+ouvrir);
+      if(noeud.vide) return;
+      for(const e of noeud.enfants){
+        if(e.tag) marche(e, niveau+1);
+        else lignes.push(e.brut ? e.texte : pad+'  '+e.texte);
+      }
+      lignes.push(pad+'</'+noeud.tag+'>');
+    }
+    racine.enfants.filter(e=>e.tag).forEach(e=>marche(e,0));
+    return lignes.join('\n');
+  }
+  function compilerCoff(source){
+    const {racine, erreurs} = analyserCoff(source);
+    return { html: versHtml(racine), erreurs, tagCount: (function count(n){ return n.enfants.reduce((s,e)=> s + (e.tag? 1+count(e):0), 0); })(racine) };
+  }
+  window.COFFHTML = { compilerCoff };
+
+  /* ---------- Banc d'essai ---------- */
+  const EXEMPLE_COFF =
+`<Value>
+<co tag="html" lang="fr">
+  <co tag="head">
+    <co tag="meta" charset="UTF-8" />
+    <co tag="title">Bonjour COFF</co>
+    <co tag="style">
+      body{margin:0;background:#05050a;color:#fff;font-family:sans-serif;}
+    </co>
+  </co>
+  <co tag="body" state="actif" symbol="🧅">
+    <co tag="h1" symbol="🚀">Bonjour COFF</co>
+    <co tag="p">Compilé par Syntaxor.</co>
+    <co tag="button" id="bouton">Clics : 0</co>
+    <co tag="script">
+      let n=0;
+      document.getElementById('bouton').onclick=()=>{n++;document.getElementById('bouton').textContent='Clics : '+n;};
+    </co>
+  </co>
+</co>
+</Value>`;
+
+  document.getElementById('benchBtn').addEventListener('click', ()=>{
+    const N = 2000;
+    const t0 = performance.now();
+    for(let i=0;i<N;i++) compilerCoff(EXEMPLE_COFF);
+    const t1 = performance.now();
+    const total = t1-t0;
+    document.getElementById('benchStats').hidden = false;
+    document.getElementById('benchTotal').textContent = total.toFixed(1);
+    document.getElementById('benchAvg').textContent = ((total*1000)/N).toFixed(1);
+    document.getElementById('benchRate').textContent = Math.round(N/(total/1000)).toLocaleString('fr-FR');
+  });
+
+  /* ---------- Éditeur + kernel local ---------- */
+  const coffSource = document.getElementById('coffSource');
+  coffSource.value = EXEMPLE_COFF;
+  document.getElementById('resetBtn').addEventListener('click', ()=>{ coffSource.value = EXEMPLE_COFF; });
+
+  let kernelAuthorized = false;
+  const kernelModal = document.getElementById('kernelModal');
+  const kernelDot = document.getElementById('kernelDot');
+  const kernelLabel = document.getElementById('kernelLabel');
+
+  function setKernelAuthorized(v){
+    kernelAuthorized = v;
+    kernelDot.classList.toggle('on', v);
+    kernelLabel.textContent = v ? 'Moteur local : autorisé (bac à sable navigateur)' : 'Moteur local : en attente d\'autorisation';
+  }
+
+  function runCompilation(){
+    const log = document.getElementById('runLog');
+    try{
+      const t0 = performance.now();
+      const { html, erreurs, tagCount } = compilerCoff(coffSource.value);
+      const t1 = performance.now();
+      document.getElementById('previewFrame').srcdoc = html;
+      log.textContent =
+        (erreurs.length ? '⚠️ '+erreurs.join(' ; ')+'\n' : '✅ Balises bien fermées\n') +
+        '⏱ Compilé en '+(t1-t0).toFixed(2)+' ms — '+tagCount+' balises\n' +
+        '➡️ Voir l\'onglet « Preview PWA » pour le rendu.';
+    }catch(err){
+      log.textContent = '❌ Erreur de compilation : '+err.message;
+    }
+  }
+
+  document.getElementById('runBtn').addEventListener('click', ()=>{
+    if(!kernelAuthorized){ kernelModal.hidden = false; return; }
+    runCompilation();
+  });
+  document.getElementById('kernelAllow').addEventListener('click', ()=>{
+    setKernelAuthorized(true); kernelModal.hidden = true; runCompilation();
+  });
+  document.getElementById('kernelDeny').addEventListener('click', ()=>{
+    kernelModal.hidden = true;
+    document.getElementById('runLog').textContent = 'Exécution refusée : le moteur local n\'a pas tourné.';
+  });
+
+  /* ---------- ViA (démo hors-ligne) ---------- */
+  const viaLog = document.getElementById('viaLog');
+  function viaSay(text, who){
+    const d = document.createElement('div'); d.className='msg '+who; d.textContent=text;
+    viaLog.appendChild(d); viaLog.scrollTop = viaLog.scrollHeight;
+  }
+  function viaReply(q){
+    const s = q.toLowerCase();
+    if(s.includes('coff')) return "COFF est notre langage à balises : <co> pour les objets, des règles a1/b2/c3 pour les flux, et des emojis comme opérateurs. Syntaxor le compile en HTML dans l'onglet DevsBot.";
+    if(s.includes('golem')) return "Golem Motor pilote les blocs sémantiques logiques matriciels : permission, cycle de vie, mémoire rémanente, dispersion, seuil, harmonie, couches. Sept moteurs réutilisables.";
+    if(s.includes('famille') || s.includes('superbot')) return "La famille se répartit en Patterns (logique masculine : B.T.B, Golem Motor, Guideoplan), Matterns (logique féminine : ViA, Superstar IA, Matrixia) et Cousern (décorticateurs transverses : Sémantia, Syntaxor…).";
+    if(s.includes('bonjour') || s.includes('salut')) return "Bonjour ! Je suis en démo hors-ligne : mes réponses sont préparées à l'avance, pas générées en direct.";
+    return "Je n'ai pas de réponse préparée pour ça dans cette démo — essayez « coff », « golem » ou « famille ».";
+  }
+  document.getElementById('viaSend').addEventListener('click', ()=>{
+    const input = document.getElementById('viaInput');
+    const val = input.value.trim(); if(!val) return;
+    viaSay(val,'user'); input.value='';
+    setTimeout(()=>viaSay(viaReply(val),'bot'), 250);
+  });
+  document.getElementById('viaInput').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('viaSend').click(); });
+
+  /* ---------- Générateur de bannière (original, sans marque) ---------- */
+  function drawBanner(){
+    const c = document.getElementById('bannerCanvas'); const ctx = c.getContext('2d');
+    const text = (document.getElementById('bannerText').value || 'SUPERBOTS').toUpperCase().slice(0,16);
+    const grad = ctx.createLinearGradient(0,0,c.width,c.height);
+    grad.addColorStop(0,'#ff2f6e'); grad.addColorStop(1,'#00e5ff');
+    ctx.fillStyle='#05060a'; ctx.fillRect(0,0,c.width,c.height);
+    for(let i=0;i<14;i++){ ctx.fillStyle='rgba(255,255,255,'+(Math.random()*0.06)+')'; ctx.fillRect(Math.random()*c.width, Math.random()*c.height, Math.random()*30, Math.random()*30); }
+    ctx.fillStyle = grad;
+    ctx.font = '700 30px Rajdhani, sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(text, c.width/2, c.height/2);
+  }
+  document.getElementById('bannerGen').addEventListener('click', drawBanner);
+  document.getElementById('bannerText').addEventListener('input', drawBanner);
+
+  /* ---------- File d'attente promo (démo locale) ---------- */
+  let queueCount = 0;
+  const queueFill = document.getElementById('queueFill');
+  const queueCountEl = document.getElementById('queueCount');
+  document.getElementById('queueAdd').addEventListener('click', ()=>{
+    queueCount = Math.min(queueCount+1, 10);
+    queueFill.style.width = (queueCount*10)+'%';
+    queueCountEl.textContent = queueCount;
+    if(queueCount===10){ queueCountEl.parentElement.innerHTML = '🎉 Seuil atteint — promo débloquée (démo)'; }
+  });
+
+  /* ---------- Sondage geek/nerd (local) ---------- */
+  document.querySelectorAll('.poll button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key='v-'+btn.dataset.vote;
+      const el=document.getElementById(key);
+      el.textContent = (parseInt(el.textContent,10)||0)+1;
+    });
+  });
+
+  /* ---------- Formulaires (front uniquement) ---------- */
+  ['formConnexion','formInscription'].forEach(id=>{
+    const f = document.getElementById(id);
+    if(f) f.addEventListener('submit', e=>{ e.preventDefault(); });
+  });
+
+  /* ---------- Init bannière ---------- */
+  drawBanner();
+
+  /* Reprise d'état si l'artifact est republié pendant que la page est ouverte */
+  try{
+    if(window.claude && window.claude.hot){
+      window.claude.hot.snapshot(()=>({ tab: localStorage.getItem('coffLabTab') }));
+    }
+  }catch(e){}
+})();
+</script>
+
+</body></html>
