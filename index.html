@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>COFF</title>
+</head>
+<body>
+<noscript>JavaScript requis pour lire le COFF.</noscript>
+
+<!-- ============ SOURCE COFF (sandwich) ============ -->
+<script type="text/coff" id="coff">
+<co>
+meta titre=Hello COFF ; langue=fr ; version=sandwich 1
+
+ST1 🎨 fond=0b0b1a ; texte=ffffff ; police=system-ui,sans-serif ; marge=0 ; plein=1 ; disposition=colonne ; espace=28 ; defilement=0
+ST2 🎨 fond=ff3d71 ; texte=ffffff ; taille=22 ; gras=1 ; rayon=18 ; largeur=86 ; largeurmax=520 ; hauteur=84 ; centre=1 ; disposition=colonne ; lueur=36 ; curseur=1 ; appui=95
+ST3 🎨 taille=44 ; gras=1 ; centre=1 ; marge=0
+
+PG1 🧱 balise=body
+BD1 🧱 balise=h1 ; texte=Hello World
+BN1 🧱 balise=div ; texte=Appuie sur la bannière 🎆
+
+FW1 🎆 etincelles=36 ; gravite=0.09 ; vie=70 ; vitesse=5.5 ; max=600 ; couleurs=ff3d71,ffd23f,3bceac,0ead69,8ecae6
+SN1 🔊 onde=square ; duree=0.18 ; volume=0.12 ; voix=6 ; bruit=1
+SC1 ⚙️ zoom=0
+
+ST1 🔗 PG1
+ST3 🔗 BD1
+ST2 🔗 BN1
+PG1 🔗 BD1
+PG1 🔗 BN1
+SC1 🔗 PG1
+BN1 🖱️➡️ FW1
+BN1 🖱️➡️ SN1
+</co>
+</co>
+</co>
+</co>
+</co>
+</co>
+</co>
+</co>
+</co>
+</script>
+
+<!-- ============ MOTEUR MINIMAL (lit le COFF ci-dessus) ============ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- feux d'artifice : réserve fixe, jamais de croissance ---------- */
+  var cv = document.createElement('canvas');
+  cv.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9';
+  document.body.appendChild(cv);
+  var cx = cv.getContext('2d');
+  var W = 0, H = 0, R = 1;
+  function fit() {
+    R = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * R); cv.height = Math.round(H * R);
+  }
+  fit(); window.addEventListener('resize', fit);
+
+  var pool = null, cur = 0, raf = 0, last = 0, idle = 0;
+  function feu(x, y, p) {
+    var max = Math.max(50, Math.min(1500, +p.max || 600));
+    if (!pool || pool.length !== max) {
+      pool = []; cur = 0;
+      for (var i = 0; i < max; i++) pool.push({ v: 0, x: 0, y: 0, dx: 0, dy: 0, l: 1, t: 1, g: 0, c: '#fff' });
+    }
+    var n = Math.min(+p.etincelles || 36, max);
+    var cols = (p.couleurs || 'ffffff').split(',').map(function (s) { return '#' + s.trim(); });
+    var sp = +p.vitesse || 5, g = +p.gravite || 0.09, life = +p.vie || 70;
+    var c1 = cols[(Math.random() * cols.length) | 0], c2 = cols[(Math.random() * cols.length) | 0];
+    for (var k = 0; k < n; k++) {
+      var q = pool[cur]; cur = (cur + 1) % max;
+      var a = Math.random() * 6.2832, s = sp * (0.35 + Math.random() * 0.65);
+      q.v = 1; q.x = x; q.y = y; q.dx = Math.cos(a) * s; q.dy = Math.sin(a) * s;
+      q.l = life * (0.7 + Math.random() * 0.6); q.t = q.l; q.g = g;
+      q.c = Math.random() < 0.7 ? c1 : c2;
+    }
+    idle = 0;
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  function tick(now) {
+    var k = Math.min((now - last) / 16.667, 3); last = now;
+    cx.setTransform(1, 0, 0, 1, 0, 0);
+    cx.globalCompositeOperation = 'destination-out';
+    cx.fillStyle = 'rgba(0,0,0,.28)';
+    cx.fillRect(0, 0, cv.width, cv.height);
+    cx.globalCompositeOperation = 'lighter';
+    var n = 0, z = Math.max(2, Math.round(3 * R)), fr = Math.pow(0.985, k);
+    for (var i = 0; i < pool.length; i++) {
+      var q = pool[i]; if (!q.v) continue;
+      q.dx *= fr; q.dy = q.dy * fr + q.g * k; q.x += q.dx * k; q.y += q.dy * k; q.t -= k;
+      if (q.t <= 0 || q.y > H + 20) { q.v = 0; continue; }
+      n++;
+      cx.globalAlpha = Math.min(1, q.t / q.l * 1.4);
+      cx.fillStyle = q.c;
+      cx.fillRect(Math.round(q.x * R), Math.round(q.y * R), z, z);
+    }
+    cx.globalAlpha = 1;
+    if (n) { idle = 0; raf = requestAnimationFrame(tick); }
+    else if (idle++ < 14) { raf = requestAnimationFrame(tick); }
+    else { cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cv.width, cv.height); raf = 0; }
+  }
+
+  /* ---------- son rétro : onde carrée, gamme pentatonique, voix limitées ---------- */
+  var AC = null, MG = null, NB = null, voices = [];
+  function ac() {
+    if (!AC) {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      AC = new C();
+      var cp = AC.createDynamicsCompressor();
+      MG = AC.createGain(); MG.gain.value = 0.9;
+      MG.connect(cp); cp.connect(AC.destination);
+      NB = AC.createBuffer(1, (AC.sampleRate * 0.12) | 0, AC.sampleRate);
+      var d = NB.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    if (AC.state === 'suspended') AC.resume();
+    return AC;
+  }
+  function son(x, y, p) {
+    var a = ac(); if (!a) return;
+    var t = a.currentTime;
+    var idx = Math.min(9, Math.max(0, Math.floor(x / Math.max(W, 1) * 10)));
+    var semi = [0, 2, 4, 7, 9][idx % 5] + 12 * Math.floor(idx / 5);
+    var f0 = 220 * Math.pow(2, semi / 12), dir = y < H / 2 ? 1 : -1;
+    var dur = +p.duree || 0.18, vol = +p.volume || 0.12, max = +p.voix || 6;
+    while (voices.length >= max) {
+      var old = voices.shift();
+      try { old.g.gain.cancelScheduledValues(t); old.g.gain.setTargetAtTime(0, t, 0.01); old.o.stop(t + 0.06); } catch (e) {}
+    }
+    var o = a.createOscillator(), g = a.createGain();
+    o.type = p.onde || 'square';
+    [0, 4, 7].forEach(function (s, i) {
+      o.frequency.setValueAtTime(f0 * Math.pow(2, dir * s / 12), t + i * dur / 3.2);
+    });
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(MG);
+    o.start(t); o.stop(t + dur + 0.03);
+    var v = { o: o, g: g }; voices.push(v);
+    o.onended = function () {
+      var i = voices.indexOf(v); if (i > -1) voices.splice(i, 1);
+      try { g.disconnect(); } catch (e) {}
+    };
+    if (p.bruit === '1') {
+      var s = a.createBufferSource(), ng = a.createGain();
+      s.buffer = NB;
+      ng.gain.setValueAtTime(vol * 0.6, t);
+      ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+      s.connect(ng); ng.connect(MG); s.start(t);
+      s.onended = function () { try { ng.disconnect(); } catch (e) {} };
+    }
+  }
+
+  /* ---------- garde-fou : ni zoom ni dézoom ---------- */
+  function guard(el, p) {
+    if (p.zoom !== '0') return;
+    document.documentElement.style.cssText += ';overflow:hidden;touch-action:none;overscroll-behavior:none;-webkit-text-size-adjust:100%';
+    el.style.cssText += ';touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none';
+    var off = function (e) { e.preventDefault(); };
+    ['gesturestart', 'gesturechange', 'gestureend', 'dblclick', 'contextmenu'].forEach(function (t) {
+      document.addEventListener(t, off, { passive: false });
+    });
+    document.addEventListener('touchstart', function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+    document.addEventListener('touchmove', off, { passive: false });
+    document.addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '_', '0'].indexOf(e.key) > -1) e.preventDefault();
+    });
+  }
+
+  /* ---------- lecteur COFF ---------- */
+  var CSS = {
+    fond: function (v) { return 'background:#' + v; },
+    texte: function (v) { return 'color:#' + v; },
+    police: function (v) { return 'font-family:' + v; },
+    taille: function (v) { return 'font-size:' + v + 'px'; },
+    marge: function (v) { return 'margin:' + v + 'px'; },
+    espace: function (v) { return 'gap:' + v + 'px'; },
+    rayon: function (v) { return 'border-radius:' + v + 'px'; },
+    largeur: function (v) { return 'width:' + v + '%'; },
+    largeurmax: function (v) { return 'max-width:' + v + 'px'; },
+    hauteur: function (v) { return 'min-height:' + v + 'px'; },
+    centre: function () { return 'text-align:center'; },
+    gras: function () { return 'font-weight:800'; },
+    plein: function () { return 'min-height:100dvh;width:100%;box-sizing:border-box'; },
+    defilement: function (v) { return v === '0' ? 'overflow:hidden' : 'overflow:auto'; },
+    disposition: function () { return 'display:flex;flex-direction:column;align-items:center;justify-content:center'; },
+    lueur: function (v, p) { return 'box-shadow:0 0 ' + v + 'px #' + (p.fond || 'ffffff'); },
+    curseur: function () { return 'cursor:pointer'; },
+    appui: function () { return 'transition:transform .08s'; }
+  };
+  function attrs(s) {
+    var o = {};
+    s.split(';').forEach(function (kv) {
+      var i = kv.indexOf('=');
+      if (i > 0) o[kv.slice(0, i).trim()] = kv.slice(i + 1).trim();
+    });
+    return o;
+  }
+  function style(el, p) {
+    if (!el) return;
+    var css = [];
+    for (var k in p) if (CSS[k]) css.push(CSS[k](p[k], p));
+    el.style.cssText += ';' + css.join(';');
+    if (p.appui) el.dataset.appui = p.appui;
+  }
+
+  var src = document.getElementById('coff').textContent;
+  var ouvrants = (src.match(/<co>/g) || []).length;
+  var fermants = (src.match(/<\/co>/g) || []).length;
+  var lines = src.replace(/<\/?co>/g, '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  var D = {}, L = [], M = {}, ADDR = /^([A-Za-z]+\d+)\s+(\S+)\s*(.*)$/;
+  lines.forEach(function (ln) {
+    if (ln.indexOf('meta ') === 0) { Object.assign(M, attrs(ln.slice(5))); return; }
+    var m = ADDR.exec(ln); if (!m) return;
+    if (m[2].indexOf('🔗') > -1 || m[2].indexOf('➡') > -1) L.push({ de: m[1], e: m[2], vers: m[3].trim() });
+    else D[m[1]] = { e: m[2], p: attrs(m[3]) };
+  });
+  function log(niveau, args) {
+    try {
+      var c = window.console;
+      var f = c && (typeof c[niveau] === 'function' ? c[niveau] : c.log);
+      if (typeof f === 'function') f.apply(c, args);
+    } catch (e) {}
+  }
+  log('info', ['COFF :', ouvrants + ' ouvrant,', L.length + ' connexions,', fermants + ' fermants',
+    (ouvrants === 1 && fermants === L.length + 1) ? '→ miroir ✔' : '→ miroir ✘']);
+
+  document.title = M.titre || 'COFF';
+  document.documentElement.lang = M.langue || 'fr';
+
+  var E = {}, T = {};
+  Object.keys(D).forEach(function (k) {
+    var d = D[k];
+    if (d.e.indexOf('🧱') > -1) {
+      var tag = d.p.balise || 'div';
+      var el = tag === 'body' ? document.body : document.createElement(tag);
+      if (d.p.texte && tag !== 'body') el.textContent = d.p.texte;
+      E[k] = el;
+    }
+  });
+  L.forEach(function (c) {
+    var A = D[c.de], B = D[c.vers];
+    if (!A || !B) { log('warn', ['COFF : adresse inconnue', c]); return; }
+    if (c.e.indexOf('🖱') > -1) {
+      (T[c.de] = T[c.de] || []).push(B);
+      if (E[c.de]) { E[c.de].setAttribute('role', 'button'); E[c.de].tabIndex = 0; }
+    } else if (A.e.indexOf('🎨') > -1) style(E[c.vers], A.p);
+    else if (A.e.indexOf('⚙') > -1) guard(E[c.vers] || document.body, A.p);
+    else if (A.e.indexOf('🧱') > -1 && B.e.indexOf('🧱') > -1 && E[c.vers] !== document.body) E[c.de].appendChild(E[c.vers]);
+  });
+  Object.keys(T).forEach(function (addr) {
+    var el = E[addr]; if (!el) return;
+    var cibles = T[addr], pressTimer = 0;
+    function go(x, y) {
+      cibles.forEach(function (b) {
+        if (b.e.indexOf('🎆') > -1) feu(x, y, b.p);
+        else if (b.e.indexOf('🔊') > -1) son(x, y, b.p);
+      });
+      if (el.dataset.appui) {
+        el.style.transform = 'scale(' + (el.dataset.appui / 100) + ')';
+        clearTimeout(pressTimer);
+        pressTimer = setTimeout(function () { el.style.transform = ''; }, 90);
+      }
+    }
+    el.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
+      go(e.clientX, e.clientY);
+    });
+    el.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
+        e.preventDefault();
+        var r = el.getBoundingClientRect();
+        go(r.left + r.width * (0.2 + Math.random() * 0.6), r.top + r.height / 2);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
